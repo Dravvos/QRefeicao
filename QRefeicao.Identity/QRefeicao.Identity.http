@@ -1,0 +1,6 @@
+@QRefeicao.Identity_HostAddress = http://localhost:5224
+
+GET {{QRefeicao.Identity_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
