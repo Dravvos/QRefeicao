@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRefeicao.Identity", "QRefe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRefeicao.DTO", "QRefeicao.DTO\QRefeicao.DTO.csproj", "{2C913199-A7C1-4413-A3BA-D38C79F45CBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRefeicao.BLL", "QRefeicao.BLL\QRefeicao.BLL.csproj", "{800C3717-402A-41EF-993B-8DDDD346FB3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRefeicao.Data", "QRefeicao.Data\QRefeicao.Data.csproj", "{7CC06CA7-FCA7-425F-8D23-92DEEDFAE851}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{2C913199-A7C1-4413-A3BA-D38C79F45CBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C913199-A7C1-4413-A3BA-D38C79F45CBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C913199-A7C1-4413-A3BA-D38C79F45CBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{800C3717-402A-41EF-993B-8DDDD346FB3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{800C3717-402A-41EF-993B-8DDDD346FB3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{800C3717-402A-41EF-993B-8DDDD346FB3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{800C3717-402A-41EF-993B-8DDDD346FB3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CC06CA7-FCA7-425F-8D23-92DEEDFAE851}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CC06CA7-FCA7-425F-8D23-92DEEDFAE851}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CC06CA7-FCA7-425F-8D23-92DEEDFAE851}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CC06CA7-FCA7-425F-8D23-92DEEDFAE851}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
