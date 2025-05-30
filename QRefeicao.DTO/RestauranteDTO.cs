@@ -11,6 +11,7 @@ namespace QRefeicao.DTO
     public class RestauranteDTO : BaseDTO
     {
         public string Nome { get; set; } = null!;
+        public string Endereco { get; set; } = null!;
         public string? LogoURL { get; set; }
         public byte[]? LogoBytes { get; set; }
         public string? CorPrincipal { get; set; }
