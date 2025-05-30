@@ -177,7 +177,6 @@ namespace QRefeicao.Identity.Controllers
         }
 
         [HttpGet]
-
         public IActionResult user()
         {
             HttpContext.Request.Cookies.TryGetValue("AuthToken", out var cookie);
@@ -198,7 +197,6 @@ namespace QRefeicao.Identity.Controllers
                 Email = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value
             });
         }
-
 
         [HttpPut]
         [AllowAnonymous]
