@@ -34,6 +34,12 @@ namespace QRefeicao.BLL.Repositories
             return con.SaveChangesAsync();
         }
 
+        public async Task<RestauranteDTO> GetById(Guid id)
+        {
+            var model = await con.Restaurante.FirstOrDefaultAsync(x => x.Id == id);
+            return Map<RestauranteDTO>.Convert(model);
+        }
+
         public async Task<RestauranteDTO> GetRestauranteByUserId(Guid userId)
         {
             var model = await con.Restaurante.FirstAsync(x => x.UsuarioId == userId);
@@ -45,7 +51,6 @@ namespace QRefeicao.BLL.Repositories
             var model = await con.Restaurante.FirstAsync(x => x.Id == dto.Id);
 
             model.Nome = dto.Nome;
-            model.Endereco = dto.Endereco;
             model.CorPrincipal = dto.CorPrincipal;
             model.CorSecundaria = dto.CorSecundaria;
             model.LogoBytes = dto.LogoBytes;

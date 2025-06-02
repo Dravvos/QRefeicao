@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Npgsql.Internal;
 using QRefeicao.BLL.Repositories.Interfaces;
 using QRefeicao.BLL.Services.Interfaces;
 using QRefeicao.DTO;
@@ -18,24 +19,49 @@ namespace QRefeicao.BLL.Services
             _repository = repository;
         }
 
-        public Task CreateRestaurante(RestauranteDTO dto)
+        private void ValidarDTO(RestauranteDTO dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Nome))
+                throw new ArgumentNullException("Digite o nome do restaurante");
+
+            if (dto.UsuarioId == Guid.Empty)
+                throw new ArgumentNullException("Sem associação de usuário");
         }
 
-        public Task DeleteRestaurante(Guid id)
+        public async Task CreateRestaurante(RestauranteDTO dto)
         {
-            throw new NotImplementedException();
+            ValidarDTO(dto);
+            
+            dto.Id = Guid.NewGuid();
+            dto.DataInclusao = DateTime.UtcNow;
+
+            await _repository.CreateRestaurante(dto);
         }
 
-        public Task<RestauranteDTO> GetRestauranteByUserId(Guid userId)
+        public async Task DeleteRestaurante(Guid id)
         {
-            throw new NotImplementedException();
+            if (await _repository.GetById(id) == null)
+                throw new KeyNotFoundException();
+
+            await _repository.DeleteRestaurante(id);
         }
 
-        public Task UpdateRestaurante(RestauranteDTO dto)
+        public async Task<RestauranteDTO> GetRestauranteByUserId(Guid userId)
         {
-            throw new NotImplementedException();
+            return await _repository.GetRestauranteByUserId(userId);
+        }
+
+        public async Task UpdateRestaurante(RestauranteDTO dto)
+        {
+            ValidarDTO(dto);
+            if (dto.Id.HasValue == false || dto.Id.Value == Guid.Empty)
+                throw new ArgumentNullException("Id inválido");
+
+            if (await _repository.GetById(dto.Id.Value) == null)
+                throw new KeyNotFoundException();
+
+            dto.DataAlteracao = DateTime.UtcNow;
+            await _repository.UpdateRestaurante(dto);
         }
     }
 }

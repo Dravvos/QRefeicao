@@ -18,44 +18,92 @@ namespace QRefeicao.BLL.Services
             _repository = repository;
         }
 
-        public Task CreateCardapio(CardapioDTO dto)
+        private void ValidarDTO(CardapioDTO dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Nome))
+                throw new ArgumentNullException("Digite um nome para o cardápio. Nem que seja 'Cardápio do restaurante abc'");
+
+            if (dto.RestauranteId == Guid.Empty)
+                throw new ArgumentNullException("Restaurante não selecionado");
+
         }
 
-        public Task CreateCardapioItem(CardapioItemDTO dto)
+        private void ValidarDTO(CardapioItemDTO dto)
         {
-            throw new NotImplementedException();
+            if (dto.CardapioId == Guid.Empty)
+                throw new ArgumentNullException("Selecione o cardápio");
+
+            if (dto.CategoriaId == Guid.Empty)
+                throw new ArgumentNullException("Selecione a categoria do item");
+
+            if (string.IsNullOrEmpty(dto.Nome))
+                throw new ArgumentNullException("Digite o nome do prato/item");
+
+            if (dto.Preco <= 0)
+                throw new ArgumentOutOfRangeException("O preço deve ser maior que zero");
+
         }
 
-        public Task DeleteCardapio(Guid id)
+        public async Task CreateCardapio(CardapioDTO dto)
         {
-            throw new NotImplementedException();
+            ValidarDTO(dto);
+            dto.Id = Guid.NewGuid();
+            dto.DataInclusao = DateTime.UtcNow;
+            await _repository.CreateCardapio(dto);
         }
 
-        public Task DeleteCardapioItem(Guid id)
+        public async Task CreateCardapioItem(CardapioItemDTO dto)
         {
-            throw new NotImplementedException();
+            ValidarDTO(dto);
+            dto.Id = Guid.NewGuid();
+            dto.DataInclusao = DateTime.UtcNow;
+            await _repository.CreateCardapioItem(dto);
         }
 
-        public Task<CardapioDTO> GetCardapioByRestaurante(Guid restauranteId)
+        public async Task DeleteCardapio(Guid id)
         {
-            throw new NotImplementedException();
+            if (await _repository.GetById(id) == null)
+                throw new KeyNotFoundException();
+
+            await _repository.DeleteCardapio(id);
         }
 
-        public Task<IList<CardapioItemDTO>> GetCardapioItensByRestaurante(Guid restauranteId)
+        public async Task DeleteCardapioItem(Guid id)
         {
-            throw new NotImplementedException();
+            if (await _repository.GetItemById(id) == null)
+                throw new KeyNotFoundException();
+
+            await _repository.DeleteCardapioItem(id);
         }
 
-        public Task UpdateCardapio(CardapioDTO dto)
+        public async Task<CardapioDTO> GetCardapioByRestaurante(Guid restauranteId)
         {
-            throw new NotImplementedException();
+            return await _repository.GetCardapioByRestaurante(restauranteId);
         }
 
-        public Task UpdateCardapioItem(CardapioItemDTO dto)
+        public async Task<IList<CardapioItemDTO>> GetCardapioItensByRestaurante(Guid restauranteId)
         {
-            throw new NotImplementedException();
+            return await _repository.GetCardapioItensByRestaurante(restauranteId);
+        }
+
+        public async Task UpdateCardapio(CardapioDTO dto)
+        {
+            ValidarDTO(dto);
+            if (dto.Id.HasValue == false || dto.Id.Value == Guid.Empty)
+                throw new ArgumentNullException("Id inválido");
+
+            if (await _repository.GetById(dto.Id.Value) == null)
+                throw new KeyNotFoundException();
+
+            dto.DataAlteracao = DateTime.UtcNow;
+            await _repository.UpdateCardapio(dto);
+        }
+
+        public async Task UpdateCardapioItem(CardapioItemDTO dto)
+        {
+            ValidarDTO(dto);
+            dto.DataAlteracao = DateTime.UtcNow;
+            await _repository.UpdateCardapioItem(dto);
         }
     }
 }

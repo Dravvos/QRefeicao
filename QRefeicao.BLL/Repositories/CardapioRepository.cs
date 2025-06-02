@@ -49,6 +49,12 @@ namespace QRefeicao.BLL.Repositories
             await con.SaveChangesAsync();
         }
 
+        public async Task<CardapioDTO> GetById(Guid id)
+        {
+            var model = await con.Cardapio.FirstOrDefaultAsync(x => x.Id == id);
+            return Map<CardapioDTO>.Convert(model);
+        }
+
         public async Task<CardapioDTO> GetCardapioByRestaurante(Guid restauranteId)
         {
             var model = await con.Cardapio.FirstOrDefaultAsync(x => x.RestauranteId == restauranteId);
@@ -58,6 +64,18 @@ namespace QRefeicao.BLL.Repositories
         public async Task<IList<CardapioItemDTO>> GetCardapioItensByRestaurante(Guid restauranteId)
         {
             var models = await con.CardapioItem.Where(x => x.Cardapio.RestauranteId == restauranteId).ToListAsync();
+            return Map<List<CardapioItemDTO>>.Convert(models);
+        }
+
+        public async Task<CardapioItemDTO> GetItemById(Guid id)
+        {
+            var model = await con.CardapioItem.FirstOrDefaultAsync(x => x.Id == id);
+            return Map<CardapioItemDTO>.Convert(model);
+        }
+
+        public async Task<IList<CardapioItemDTO>> GetItensByCardapio(Guid cardapioId)
+        {
+            var models = await con.CardapioItem.Where(x => x.CardapioId == cardapioId).ToListAsync();
             return Map<List<CardapioItemDTO>>.Convert(models);
         }
 

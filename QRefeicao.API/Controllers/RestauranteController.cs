@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QRefeicao.BLL.Services.Interfaces;
 
 namespace QRefeicao.API.Controllers
 {
@@ -7,5 +8,12 @@ namespace QRefeicao.API.Controllers
     [ApiController]
     public class RestauranteController : ControllerBase
     {
+        private readonly IRestauranteService _service;
+
+        public RestauranteController(IRestauranteService service)
+        {
+            _service = service;
+        }
+
     }
 }

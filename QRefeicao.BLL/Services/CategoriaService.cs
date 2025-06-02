@@ -16,24 +16,44 @@ namespace QRefeicao.BLL.Services
         {
             _repository = repository;
         }
-        public Task CreateCategoria(CategoriaDTO dto)
+
+        private void ValidarDTO(CategoriaDTO dto)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Nome))
+                throw new ArgumentNullException("Digite o nome da categoria");
+            if (dto.RestauranteId == Guid.Empty)
+                throw new ArgumentNullException("Restaurante não selecionado");
+            if (dto.OrdemExibicao < 0)
+                throw new ArgumentOutOfRangeException("O menor índice é zero");
+            
         }
 
-        public Task DeleteCategoria(Guid id)
+        public async Task CreateCategoria(CategoriaDTO dto)
         {
-            throw new NotImplementedException();
+            ValidarDTO(dto);
+            dto.Id = Guid.NewGuid();
+            dto.DataInclusao = DateTime.UtcNow;
+            await _repository.CreateCategoria(dto);
         }
 
-        public Task<IList<CategoriaDTO>> GetCategoriasByRestaurante(Guid restauranteId)
+        public async Task DeleteCategoria(Guid id)
         {
-            throw new NotImplementedException();
+            if (await _repository.GetById(id) == null)
+                throw new KeyNotFoundException();
+
+            await _repository.DeleteCategoria(id);
         }
 
-        public Task UpdateCategoria(CategoriaDTO dto)
+        public async Task<IList<CategoriaDTO>> GetCategoriasByRestaurante(Guid restauranteId)
         {
-            throw new NotImplementedException();
+            return await _repository.GetCategoriasByRestaurante(restauranteId);
+        }
+
+        public async Task UpdateCategoria(CategoriaDTO dto)
+        {
+            ValidarDTO(dto);
+            dto.DataAlteracao = DateTime.UtcNow;
+            await _repository.UpdateCategoria(dto);
         }
     }
 }

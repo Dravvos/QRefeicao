@@ -34,6 +34,12 @@ namespace QRefeicao.BLL.Repositories
             await con.SaveChangesAsync();
         }
 
+        public async Task<CategoriaDTO> GetById(Guid id)
+        {
+            var model = await con.Categoria.FirstOrDefaultAsync(x => x.Id == id);
+            return Map<CategoriaDTO>.Convert(model);
+        }
+
         public async Task<IList<CategoriaDTO>> GetCategoriasByRestaurante(Guid restauranteId)
         {
             var models = await con.Categoria.Where(x => x.RestauranteId == restauranteId).ToListAsync();

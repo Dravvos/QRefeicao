@@ -21,10 +21,6 @@ namespace QRefeicao.Data.Models
         [Column("LogoBytes")]
         public byte[]? LogoBytes { get; set; }
 
-        [Required]
-        [Column("Endereco")]
-        public string Endereco { get; set; } = null!;
-
         [Column("CorPrincipal")]
         public string? CorPrincipal { get; set; }
 
