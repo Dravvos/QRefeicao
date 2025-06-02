@@ -17,6 +17,7 @@ namespace QRefeicao.DTO
         public decimal Preco { get; set; }
         public string? ImagemURL { get; set; }
         public byte[]? ImagemBytes { get; set; }
+        public int Ordem { get; set; }
 
         public CardapioDTO? Cardapio { get; set; }
         public CategoriaDTO? Categoria { get; set; }

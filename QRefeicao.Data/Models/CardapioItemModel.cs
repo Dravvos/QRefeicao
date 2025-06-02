@@ -38,6 +38,9 @@ namespace QRefeicao.Data.Models
         [Column("ImagemBytes")]
         public byte[]? ImagemBytes { get; set; }
 
+        [Required]
+        [Column("Ordem")]
+        public int Ordem { get; set; }
 
         [ForeignKey("CardapioId")]
         public virtual CardapioModel? Cardapio { get; set; }
