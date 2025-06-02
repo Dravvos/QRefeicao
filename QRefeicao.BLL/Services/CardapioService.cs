@@ -26,6 +26,8 @@ namespace QRefeicao.BLL.Services
             if (dto.RestauranteId == Guid.Empty)
                 throw new ArgumentNullException("Restaurante não selecionado");
 
+            if (dto.IdTGIdioma == Guid.Empty)
+                throw new ArgumentNullException("Selecione o idioma do cardápio");
         }
 
         private void ValidarDTO(CardapioItemDTO dto)

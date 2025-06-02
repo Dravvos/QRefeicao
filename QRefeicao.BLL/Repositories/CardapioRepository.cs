@@ -83,6 +83,7 @@ namespace QRefeicao.BLL.Repositories
         {
             var model = await con.Cardapio.FirstAsync(x => x.Id == dto.Id);
             model.Nome = dto.Nome;
+            model.IdTGIdioma = dto.IdTGIdioma;
             model.Descricao = dto.Descricao;
             model.UsuarioAlteracao = dto.UsuarioAlteracao;
             model.RestauranteId = dto.RestauranteId;

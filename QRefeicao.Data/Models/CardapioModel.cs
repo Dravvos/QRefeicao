@@ -22,9 +22,16 @@ namespace QRefeicao.Data.Models
         [Column("Descrição")]
         public string? Descricao { get; set; }
 
-        
+        [Required]
+        [Column("IdTGIdioma")]
+        public Guid IdTGIdioma { get; set; }
+
+
         [ForeignKey("RestauranteId")]
         public virtual RestauranteModel? Restaurante { get; set; }
+        
+        [ForeignKey("IdTGIdioma")]
+        public virtual TabelaGeralItemModel? Idioma { get; set; }
 
         public virtual List<CardapioItemModel> ItensCardapio { get; set; } = new List<CardapioItemModel>();
     }

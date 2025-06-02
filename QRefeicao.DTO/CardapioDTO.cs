@@ -13,6 +13,8 @@ namespace QRefeicao.DTO
         public string? Nome { get; set; }
         public Guid RestauranteId { get; set; }
         public string? Descricao { get; set; }
+        public Guid IdTGIdioma { get; set; }
+        public TabelaGeralItemDTO? Idioma { get; set; }
         public RestauranteDTO? Restaurante { get; set; }
     }
 }
