@@ -14,7 +14,7 @@ namespace QRefeicao.Data
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var con = Environment.GetEnvironmentVariable("QRCon");
+            var con = Environment.GetEnvironmentVariable("QRConnection");
             optionsBuilder.UseNpgsql(con);
         }
 

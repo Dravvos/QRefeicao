@@ -25,7 +25,7 @@ var localizationOptions = new RequestLocalizationOptions()
 
 builder.Services.AddDbContext<AuthContext>(options =>
 {
-    options.UseNpgsql(Environment.GetEnvironmentVariable("MEIConn"));
+    options.UseNpgsql(Environment.GetEnvironmentVariable("QRConnection"));
 });
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()

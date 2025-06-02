@@ -14,7 +14,7 @@ namespace QRefeicao.Identity.Models
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var config = Environment.GetEnvironmentVariable("MEIConn");
+            var config = Environment.GetEnvironmentVariable("QRConnection");
             optionsBuilder.UseNpgsql(config);
         }
     }

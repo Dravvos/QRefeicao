@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<QRContext>(options =>
 {
-    var connection = Environment.GetEnvironmentVariable("MEIConn");
+    var connection = Environment.GetEnvironmentVariable("QRConnection");
     options.UseNpgsql(connection);
 });
 

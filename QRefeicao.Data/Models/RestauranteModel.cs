@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace QRefeicao.Data.Models
 {
     [Table("Restaurante")]
-    public class RestauranteModel:BaseModel
+    public class RestauranteModel : BaseModel
     {
         [Required]
         [Column("Nome")]
@@ -25,7 +25,7 @@ namespace QRefeicao.Data.Models
         public string? CorPrincipal { get; set; }
 
         [Column("CorSecundaria")]
-        public string? CorSecundaria{ get; set; }
+        public string? CorSecundaria { get; set; }
 
         [Required]
         [Column("UsuarioId")]
