@@ -26,6 +26,30 @@ namespace QRefeicao.BLL.Services
 
             if (dto.UsuarioId == Guid.Empty)
                 throw new ArgumentNullException("Sem associação de usuário");
+
+            if (string.IsNullOrEmpty(dto.Email))
+                throw new ArgumentNullException("Preencha o email do restaurante. Se não tiver preencha com");
+            
+            if (string.IsNullOrEmpty(dto.Telefone))
+                throw new ArgumentNullException("Preencha o telefone do restaurante. Se não tiver preencha com 0");
+
+            if (string.IsNullOrEmpty(dto.CEP))
+                throw new ArgumentNullException("Preencha o CEP do restaurante");
+            
+            if (string.IsNullOrEmpty(dto.Endereco))
+                throw new ArgumentNullException("Preencha o endereço do restaurante");
+
+            if (dto.Numero <= 0)
+                throw new ArgumentOutOfRangeException("O número do endereço do restaurante deve ser maior que zero");
+            
+            if (string.IsNullOrEmpty(dto.Bairro))
+                throw new ArgumentNullException("Preencha o bairro do restaurante");
+            
+            if (string.IsNullOrEmpty(dto.Cidade))
+                throw new ArgumentNullException("Preencha a cidade do restaurante");
+            
+            if (string.IsNullOrEmpty(dto.Estado))
+                throw new ArgumentNullException("Preencha o estado do restaurante");
         }
 
         public async Task CreateRestaurante(RestauranteDTO dto)
