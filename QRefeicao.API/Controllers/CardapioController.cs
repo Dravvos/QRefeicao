@@ -119,6 +119,51 @@ namespace QRefeicao.API.Controllers
             }
         }
 
+
+        private string EmbaralharGuid(string guid)
+        {
+            string semHifen = guid.Replace("-", "");
+            char[] chars = semHifen.ToCharArray();
+
+            for (int i = 0; i < chars.Length - 1; i += 2)
+            {
+                // Troca pares de caracteres
+                (chars[i], chars[i + 1]) = (chars[i + 1], chars[i]);
+            }
+
+            string embaralhado = new string(chars);
+            // Reinsere os hífens no padrão UUID
+            return $"{embaralhado.Substring(0, 8)}-{embaralhado.Substring(8, 4)}-{embaralhado.Substring(12, 4)}-{embaralhado.Substring(16, 4)}-{embaralhado.Substring(20)}";
+        }
+
+        private string DesembaralharGuid(string guid)
+        {
+            string cleanGuid = guid.Replace("-", "");
+            if (cleanGuid.Length != 32)
+            {
+                throw new ArgumentException("GUID inválido. Deve conter 32 caracteres hexadecimais sem hífens.");
+            }
+
+            char[] scrambled = cleanGuid.ToCharArray();
+            char[] original = new char[32];
+
+            // Desembaralha: para cada posição j, o caractere volta para a posição (j * 11) % 32
+            // (pois 11 é o inverso modular de 3 em módulo 32)
+            for (int j = 0; j < 32; j++)
+            {
+                int i = (j * 11) % 32;
+                original[i] = scrambled[j];
+            }
+
+            // Opcional: reinsere os hífens no padrão padrão 8-4-4-4-12
+            return string.Format("{0}-{1}-{2}-{3}-{4}",
+                new string(original, 0, 8),
+                new string(original, 8, 4),
+                new string(original, 12, 4),
+                new string(original, 16, 4),
+                new string(original, 20, 12));
+        }
+
         [HttpGet]
         [Route("[action]/{id:guid}")]
         [AllowAnonymous]
@@ -126,6 +171,8 @@ namespace QRefeicao.API.Controllers
         {
             try
             {
+                id = Guid.Parse(DesembaralharGuid(id.ToString()));
+
                 if (id == Guid.Empty)
                     return UnprocessableEntity("Id do cardápio não pode ser vazio");
                 var itensCardapio = await _service.GetCardapioItensByCardapio(id);
