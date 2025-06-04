@@ -107,10 +107,22 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseCors(cors =>
+    {
+        cors.AllowAnyHeader();
+        cors.AllowAnyMethod();
+        cors.WithOrigins("http://localhost:5173", "https://localhost:44327");
+        cors.AllowCredentials();
+    });
+}
+else
+{
+    app.UseCors("AllowAll");
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
