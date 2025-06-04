@@ -69,7 +69,7 @@ namespace QRefeicao.Identity.Controllers
             {
                 user = await _userManager.FindByEmailAsync(dto.Email);
                 if (user == null)
-                    return BadRequest("Invalid username/password");
+                    return BadRequest("Email/Senha inválido(s)");
             }
 
             var result = await _signInManager.PasswordSignInAsync(user.UserName, dto.Password, false, false);
@@ -84,7 +84,6 @@ namespace QRefeicao.Identity.Controllers
                 new Claim(JwtRegisteredClaimNames.Email,user.Email),
                 new Claim(JwtRegisteredClaimNames.GivenName,user.Nome),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.Sobrenome),
-                new Claim(JwtRegisteredClaimNames.Email,user.Email)
                 };
                 var roles = await _userManager.GetRolesAsync(user);
                 foreach (var role in roles)
@@ -196,6 +195,13 @@ namespace QRefeicao.Identity.Controllers
                 Sobrenome = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.FamilyName)?.Value,
                 Email = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value
             });
+        }
+
+        [HttpGet("csrf-token")]
+        public IActionResult GetCsrfToken()
+        {
+            // ASP.NET Core auto-generates and sets the CSRF token in a cookie
+            return Ok();
         }
 
         [HttpPut]

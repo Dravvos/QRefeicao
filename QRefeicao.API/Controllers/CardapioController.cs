@@ -10,7 +10,6 @@ namespace QRefeicao.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CardapioController : ControllerBase
     {
         private readonly ICardapioService _service;
@@ -21,6 +20,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpGet("{restauranteId:guid}")]
+        [Authorize]
         public async Task<IActionResult> Get(Guid restauranteId)
         {
             try
@@ -40,6 +40,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CardapioDTO dto)
         {
             try
@@ -62,7 +63,9 @@ namespace QRefeicao.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        
         [HttpPut("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> Update(Guid id, [FromBody] CardapioDTO dto)
         {
             try
@@ -93,6 +96,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
@@ -117,6 +121,7 @@ namespace QRefeicao.API.Controllers
 
         [HttpGet]
         [Route("[action]/{id:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetItems(Guid id)
         {
             try
@@ -139,6 +144,7 @@ namespace QRefeicao.API.Controllers
 
         [HttpPost]
         [Route("[action]")]
+        [Authorize]
         public async Task<IActionResult> CreateItem([FromBody] CardapioItemDTO dto)
         {
             try
@@ -164,6 +170,7 @@ namespace QRefeicao.API.Controllers
 
         [HttpPut]
         [Route("[action]/{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> UpdateItem(Guid id, [FromBody] CardapioItemDTO dto)
         {
             try
@@ -196,6 +203,7 @@ namespace QRefeicao.API.Controllers
 
         [HttpDelete]
         [Route("[action]/{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> DeleteItem(Guid id)
         {
             try

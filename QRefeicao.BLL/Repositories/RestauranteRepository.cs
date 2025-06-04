@@ -42,7 +42,7 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<RestauranteDTO> GetRestauranteByUserId(Guid userId)
         {
-            var model = await con.Restaurante.FirstAsync(x => x.UsuarioId == userId);
+            var model = await con.Restaurante.FirstOrDefaultAsync(x => x.UsuarioId == userId);
             return Map<RestauranteDTO>.Convert(model);
         }
 

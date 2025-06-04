@@ -91,7 +91,7 @@ if (builder.Environment.IsProduction())
     {
         options.AddPolicy("AllowAll", builder =>
         {
-            builder.WithOrigins("https://www.meicaixa.com.br", "https://meicaixa.com.br", "https://www.danieloliveira.net.br", "https://danieloliveira.net.br")
+            builder.WithOrigins("https://www.danieloliveira.net.br", "https://danieloliveira.net.br")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();
@@ -154,6 +154,18 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    app.UseCors(cors =>
+    {
+        cors.AllowAnyHeader();
+        cors.AllowAnyMethod();
+        cors.WithOrigins("http://localhost:5173", "https://localhost:44346");
+        cors.AllowCredentials();
+    });
+}
+else
+{
+    app.UseCors("AllowAll");
 }
 using var scope = app.Services.CreateScope();
 var initializer = scope.ServiceProvider.GetRequiredService<IDBInitializer>();

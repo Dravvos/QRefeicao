@@ -106,6 +106,10 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Nome");
 
+                    b.Property<int>("Ordem")
+                        .HasColumnType("integer")
+                        .HasColumnName("Ordem");
+
                     b.Property<decimal>("Preco")
                         .HasPrecision(12, 2)
                         .HasColumnType("numeric(12,2)")
@@ -148,6 +152,10 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Descrição");
 
+                    b.Property<Guid>("IdTGIdioma")
+                        .HasColumnType("uuid")
+                        .HasColumnName("IdTGIdioma");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text")
@@ -167,6 +175,8 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnName("UsuarioInclusao");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdTGIdioma");
 
                     b.HasIndex("RestauranteId");
 
@@ -228,6 +238,26 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("Id");
 
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Bairro");
+
+                    b.Property<string>("CEP")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("CEP");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Cidade");
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("text")
+                        .HasColumnName("Complemento");
+
                     b.Property<string>("CorPrincipal")
                         .HasColumnType("text")
                         .HasColumnName("CorPrincipal");
@@ -244,6 +274,22 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("DataInclusao");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Email");
+
+                    b.Property<string>("Endereco")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("Endereco");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)")
+                        .HasColumnName("Estado");
+
                     b.Property<byte[]>("LogoBytes")
                         .HasColumnType("bytea")
                         .HasColumnName("LogoBytes");
@@ -256,6 +302,16 @@ namespace QRefeicao.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("Nome");
+
+                    b.Property<long>("Numero")
+                        .HasColumnType("bigint")
+                        .HasColumnName("Numero");
+
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("Telefone");
 
                     b.Property<string>("UsuarioAlteracao")
                         .HasColumnType("text")
@@ -401,11 +457,19 @@ namespace QRefeicao.Data.Migrations
 
             modelBuilder.Entity("QRefeicao.Data.Models.CardapioModel", b =>
                 {
+                    b.HasOne("QRefeicao.Data.Models.TabelaGeralItemModel", "Idioma")
+                        .WithMany()
+                        .HasForeignKey("IdTGIdioma")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("QRefeicao.Data.Models.RestauranteModel", "Restaurante")
                         .WithMany()
                         .HasForeignKey("RestauranteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Idioma");
 
                     b.Navigation("Restaurante");
                 });

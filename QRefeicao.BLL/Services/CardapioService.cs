@@ -30,7 +30,7 @@ namespace QRefeicao.BLL.Services
                 throw new ArgumentNullException("Selecione o idioma do cardápio");
         }
 
-        private void ValidarDTO(CardapioItemDTO dto)
+        private async Task ValidarDTO(CardapioItemDTO dto)
         {
             if (dto.CardapioId == Guid.Empty)
                 throw new ArgumentNullException("Selecione o cardápio");
@@ -44,6 +44,12 @@ namespace QRefeicao.BLL.Services
             if (dto.Preco <= 0)
                 throw new ArgumentOutOfRangeException("O preço deve ser maior que zero");
 
+            if (dto.Ordem <= 0)
+                throw new ArgumentOutOfRangeException("O menor índice é zero");
+
+            var itens = await _repository.GetCardapioItensByCardapio(dto.CardapioId);
+            if (itens.Count(x => x.Ordem == dto.Ordem) > 0)
+                throw new ArgumentException("Já existe um item no cardápio com essa posição");
         }
 
         public async Task CreateCardapio(CardapioDTO dto)
@@ -56,7 +62,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task CreateCardapioItem(CardapioItemDTO dto)
         {
-            ValidarDTO(dto);
+            await ValidarDTO(dto);
             dto.Id = Guid.NewGuid();
             dto.DataInclusao = DateTime.UtcNow;
             await _repository.CreateCardapioItem(dto);
@@ -83,9 +89,9 @@ namespace QRefeicao.BLL.Services
             return await _repository.GetCardapioByRestaurante(restauranteId);
         }
 
-        public async Task<IList<CardapioItemDTO>> GetCardapioItensByCardapio(Guid restauranteId)
+        public async Task<IList<CardapioItemDTO>> GetCardapioItensByCardapio(Guid cardapioId)
         {
-            return await _repository.GetCardapioItensByCardapio(restauranteId);
+            return await _repository.GetCardapioItensByCardapio(cardapioId);
         }
 
         public async Task UpdateCardapio(CardapioDTO dto)
@@ -103,7 +109,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task UpdateCardapioItem(CardapioItemDTO dto)
         {
-            ValidarDTO(dto);
+            await ValidarDTO(dto);
             dto.DataAlteracao = DateTime.UtcNow;
             await _repository.UpdateCardapioItem(dto);
         }

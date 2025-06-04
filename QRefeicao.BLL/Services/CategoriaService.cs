@@ -17,7 +17,7 @@ namespace QRefeicao.BLL.Services
             _repository = repository;
         }
 
-        private void ValidarDTO(CategoriaDTO dto)
+        private async Task ValidarDTO(CategoriaDTO dto)
         {
             if (string.IsNullOrEmpty(dto.Nome))
                 throw new ArgumentNullException("Digite o nome da categoria");
@@ -25,12 +25,16 @@ namespace QRefeicao.BLL.Services
                 throw new ArgumentNullException("Restaurante não selecionado");
             if (dto.OrdemExibicao < 0)
                 throw new ArgumentOutOfRangeException("O menor índice é zero");
-            
+
+            var categorias = await _repository.GetCategoriasByRestaurante(dto.RestauranteId);
+            if (categorias.Count(x => x.OrdemExibicao == dto.OrdemExibicao) > 0)
+                throw new ArgumentException("Já existe uma categoria com essa posição");
+
         }
 
         public async Task CreateCategoria(CategoriaDTO dto)
         {
-            ValidarDTO(dto);
+            await ValidarDTO(dto);
             dto.Id = Guid.NewGuid();
             dto.DataInclusao = DateTime.UtcNow;
             await _repository.CreateCategoria(dto);
@@ -51,7 +55,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task UpdateCategoria(CategoriaDTO dto)
         {
-            ValidarDTO(dto);
+            await ValidarDTO(dto);
             dto.DataAlteracao = DateTime.UtcNow;
             await _repository.UpdateCategoria(dto);
         }

@@ -13,6 +13,15 @@ namespace QRefeicao.DTO
         public string Nome { get; set; } = null!;
         public string? LogoURL { get; set; }
         public byte[]? LogoBytes { get; set; }
+        public string LogoBase64
+        {
+            get
+            {
+                if (LogoBytes != null && LogoBytes.Length > 0)
+                    return Convert.ToBase64String(LogoBytes);
+                return "";
+            }
+        }
         public string? CorPrincipal { get; set; }
         public string? CorSecundaria { get; set; }
         public Guid UsuarioId { get; set; }

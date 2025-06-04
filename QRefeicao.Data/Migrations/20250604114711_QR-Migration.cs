@@ -17,10 +17,19 @@ namespace QRefeicao.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Nome = table.Column<string>(type: "text", nullable: false),
+                    Telefone = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
                     LogoURL = table.Column<string>(type: "text", nullable: true),
                     LogoBytes = table.Column<byte[]>(type: "bytea", nullable: true),
                     CorPrincipal = table.Column<string>(type: "text", nullable: true),
                     CorSecundaria = table.Column<string>(type: "text", nullable: true),
+                    CEP = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: false),
+                    Endereco = table.Column<string>(type: "text", nullable: false),
+                    Numero = table.Column<long>(type: "bigint", nullable: false),
+                    Complemento = table.Column<string>(type: "text", nullable: true),
+                    Bairro = table.Column<string>(type: "text", nullable: false),
+                    Cidade = table.Column<string>(type: "text", nullable: false),
+                    Estado = table.Column<string>(type: "character varying(2)", maxLength: 2, nullable: false),
                     UsuarioId = table.Column<Guid>(type: "uuid", nullable: false),
                     DataInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UsuarioInclusao = table.Column<string>(type: "text", nullable: false),
@@ -47,30 +56,6 @@ namespace QRefeicao.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TabelaGeral", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Cardapio",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Nome = table.Column<string>(type: "text", nullable: false),
-                    RestauranteId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Descrição = table.Column<string>(type: "text", nullable: true),
-                    DataInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UsuarioInclusao = table.Column<string>(type: "text", nullable: false),
-                    DataAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UsuarioAlteracao = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cardapio", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Cardapio_Restaurante_RestauranteId",
-                        column: x => x.RestauranteId,
-                        principalTable: "Restaurante",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,40 +108,6 @@ namespace QRefeicao.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CardapioItem",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CardapioId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CategoriaId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Nome = table.Column<string>(type: "text", nullable: false),
-                    Descricao = table.Column<string>(type: "text", nullable: true),
-                    Preco = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
-                    ImagemURL = table.Column<string>(type: "text", nullable: true),
-                    ImagemBytes = table.Column<byte[]>(type: "bytea", nullable: true),
-                    DataInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UsuarioInclusao = table.Column<string>(type: "text", nullable: false),
-                    DataAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UsuarioAlteracao = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CardapioItem", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CardapioItem_Cardapio_CardapioId",
-                        column: x => x.CardapioId,
-                        principalTable: "Cardapio",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_CardapioItem_Categoria_CategoriaId",
-                        column: x => x.CategoriaId,
-                        principalTable: "Categoria",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Assinatura",
                 columns: table => new
                 {
@@ -186,6 +137,72 @@ namespace QRefeicao.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Cardapio",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Nome = table.Column<string>(type: "text", nullable: false),
+                    RestauranteId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Descrição = table.Column<string>(type: "text", nullable: true),
+                    IdTGIdioma = table.Column<Guid>(type: "uuid", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UsuarioInclusao = table.Column<string>(type: "text", nullable: false),
+                    DataAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UsuarioAlteracao = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cardapio", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cardapio_Restaurante_RestauranteId",
+                        column: x => x.RestauranteId,
+                        principalTable: "Restaurante",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Cardapio_TabelaGeralItem_IdTGIdioma",
+                        column: x => x.IdTGIdioma,
+                        principalTable: "TabelaGeralItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CardapioItem",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CardapioId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CategoriaId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Nome = table.Column<string>(type: "text", nullable: false),
+                    Descricao = table.Column<string>(type: "text", nullable: true),
+                    Preco = table.Column<decimal>(type: "numeric(12,2)", precision: 12, scale: 2, nullable: false),
+                    ImagemURL = table.Column<string>(type: "text", nullable: true),
+                    ImagemBytes = table.Column<byte[]>(type: "bytea", nullable: true),
+                    Ordem = table.Column<int>(type: "integer", nullable: false),
+                    DataInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UsuarioInclusao = table.Column<string>(type: "text", nullable: false),
+                    DataAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UsuarioAlteracao = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardapioItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CardapioItem_Cardapio_CardapioId",
+                        column: x => x.CardapioId,
+                        principalTable: "Cardapio",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CardapioItem_Categoria_CategoriaId",
+                        column: x => x.CategoriaId,
+                        principalTable: "Categoria",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Assinatura_IdTGStatusAssinatura",
                 table: "Assinatura",
@@ -195,6 +212,11 @@ namespace QRefeicao.Data.Migrations
                 name: "IX_Assinatura_IdTGTipoAssinatura",
                 table: "Assinatura",
                 column: "IdTGTipoAssinatura");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cardapio_IdTGIdioma",
+                table: "Cardapio",
+                column: "IdTGIdioma");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cardapio_RestauranteId",
@@ -232,19 +254,19 @@ namespace QRefeicao.Data.Migrations
                 name: "CardapioItem");
 
             migrationBuilder.DropTable(
-                name: "TabelaGeralItem");
-
-            migrationBuilder.DropTable(
                 name: "Cardapio");
 
             migrationBuilder.DropTable(
                 name: "Categoria");
 
             migrationBuilder.DropTable(
-                name: "TabelaGeral");
+                name: "TabelaGeralItem");
 
             migrationBuilder.DropTable(
                 name: "Restaurante");
+
+            migrationBuilder.DropTable(
+                name: "TabelaGeral");
         }
     }
 }
