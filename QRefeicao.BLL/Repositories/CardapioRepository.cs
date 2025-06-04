@@ -55,15 +55,15 @@ namespace QRefeicao.BLL.Repositories
             return Map<CardapioDTO>.Convert(model);
         }
 
-        public async Task<CardapioDTO> GetCardapioByRestaurante(Guid restauranteId)
+        public async Task<IList<CardapioDTO>> GetCardapioByRestaurante(Guid restauranteId)
         {
-            var model = await con.Cardapio.FirstOrDefaultAsync(x => x.RestauranteId == restauranteId);
-            return Map<CardapioDTO>.Convert(model);
+            var model = await con.Cardapio.Where(x => x.RestauranteId == restauranteId).ToListAsync();
+            return Map<List<CardapioDTO>>.Convert(model);
         }
 
-        public async Task<IList<CardapioItemDTO>> GetCardapioItensByRestaurante(Guid restauranteId)
+        public async Task<IList<CardapioItemDTO>> GetCardapioItensByCardapio(Guid cardapioId)
         {
-            var models = await con.CardapioItem.Where(x => x.Cardapio.RestauranteId == restauranteId).ToListAsync();
+            var models = await con.CardapioItem.Where(x => x.CardapioId == cardapioId).ToListAsync();
             return Map<List<CardapioItemDTO>>.Convert(models);
         }
 

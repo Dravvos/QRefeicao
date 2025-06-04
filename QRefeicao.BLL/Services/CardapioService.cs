@@ -78,14 +78,14 @@ namespace QRefeicao.BLL.Services
             await _repository.DeleteCardapioItem(id);
         }
 
-        public async Task<CardapioDTO> GetCardapioByRestaurante(Guid restauranteId)
+        public async Task<IList<CardapioDTO>> GetCardapioByRestaurante(Guid restauranteId)
         {
             return await _repository.GetCardapioByRestaurante(restauranteId);
         }
 
-        public async Task<IList<CardapioItemDTO>> GetCardapioItensByRestaurante(Guid restauranteId)
+        public async Task<IList<CardapioItemDTO>> GetCardapioItensByCardapio(Guid restauranteId)
         {
-            return await _repository.GetCardapioItensByRestaurante(restauranteId);
+            return await _repository.GetCardapioItensByCardapio(restauranteId);
         }
 
         public async Task UpdateCardapio(CardapioDTO dto)

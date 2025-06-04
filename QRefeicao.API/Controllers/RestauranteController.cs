@@ -20,7 +20,7 @@ namespace QRefeicao.API.Controllers
             _service = service;
         }
 
-        [HttpGet("[action]")]
+        [HttpGet]
         public async Task<IActionResult> GetByUser()
         {
             try
@@ -77,13 +77,16 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> Put(Guid id, [FromBody] RestauranteDTO dto)
         {
             try
             {
                 if (dto == null)
                     return UnprocessableEntity("Restaurante não pode estar nulo");
+
+                if (id != dto.Id)
+                    return BadRequest("Id do restaurante não confere");
 
                 dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.UpdateRestaurante(dto);
@@ -107,7 +110,7 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             try

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QRefeicao.BLL.Services.Interfaces;
 using QRefeicao.DTO;
@@ -9,6 +10,7 @@ namespace QRefeicao.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriaController : ControllerBase
     {
         private readonly ICategoriaService _service;
@@ -18,8 +20,7 @@ namespace QRefeicao.API.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        [Route("[action]/{restauranteId}")]
+        [HttpGet("{restauranteId}")]
         public async Task<IActionResult> GetCategoriasByRestaurante(Guid restauranteId)
         {
             try
@@ -71,6 +72,9 @@ namespace QRefeicao.API.Controllers
             {
                 if (dto == null)
                     return UnprocessableEntity("Categoria não pode estar nula");
+
+                if (id != dto.Id)
+                    return BadRequest("Id da categoria não confere");
 
                 dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.UpdateCategoria(dto);
