@@ -27,6 +27,13 @@ namespace QRefeicao.DTO
                     return Convert.ToBase64String(ImagemBytes);
                 return "";
             }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    ImagemBytes = Convert.FromBase64String(value);
+                else
+                    ImagemBytes = null;
+            }
         }
         public CardapioDTO? Cardapio { get; set; }
         public CategoriaDTO? Categoria { get; set; }

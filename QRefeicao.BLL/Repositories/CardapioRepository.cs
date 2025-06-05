@@ -57,7 +57,7 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<IList<CardapioDTO>> GetCardapioByRestaurante(Guid restauranteId)
         {
-            var model = await con.Cardapio.Where(x => x.RestauranteId == restauranteId).ToListAsync();
+            var model = await con.Cardapio.Where(x => x.RestauranteId == restauranteId).Include(x=>x.Restaurante).ToListAsync();
             return Map<List<CardapioDTO>>.Convert(model);
         }
 
@@ -110,6 +110,7 @@ namespace QRefeicao.BLL.Repositories
             model.ImagemBytes = dto.ImagemBytes;
             model.UsuarioAlteracao = dto.UsuarioAlteracao;
             model.DataAlteracao = dto.DataAlteracao;
+            model.Ordem = dto.Ordem;
 
             await con.SaveChangesAsync();
         }

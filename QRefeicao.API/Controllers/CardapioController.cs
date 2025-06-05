@@ -119,23 +119,6 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-
-        private string EmbaralharGuid(string guid)
-        {
-            string semHifen = guid.Replace("-", "");
-            char[] chars = semHifen.ToCharArray();
-
-            for (int i = 0; i < chars.Length - 1; i += 2)
-            {
-                // Troca pares de caracteres
-                (chars[i], chars[i + 1]) = (chars[i + 1], chars[i]);
-            }
-
-            string embaralhado = new string(chars);
-            // Reinsere os hífens no padrão UUID
-            return $"{embaralhado.Substring(0, 8)}-{embaralhado.Substring(8, 4)}-{embaralhado.Substring(12, 4)}-{embaralhado.Substring(16, 4)}-{embaralhado.Substring(20)}";
-        }
-
         private string DesembaralharGuid(string guid)
         {
             string cleanGuid = guid.Replace("-", "");

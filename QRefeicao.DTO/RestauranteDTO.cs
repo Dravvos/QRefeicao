@@ -19,7 +19,14 @@ namespace QRefeicao.DTO
             {
                 if (LogoBytes != null && LogoBytes.Length > 0)
                     return Convert.ToBase64String(LogoBytes);
-                return "";
+                return string.Empty;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                    LogoBytes = Convert.FromBase64String(value);
+                else
+                    LogoBytes = null;
             }
         }
         public string? CorPrincipal { get; set; }
