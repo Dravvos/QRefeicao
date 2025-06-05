@@ -10,7 +10,7 @@ namespace QRefeicao.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class CategoriaController : ControllerBase
     {
         private readonly ICategoriaService _service;
@@ -21,6 +21,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpGet("{restauranteId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCategoriasByRestaurante(Guid restauranteId)
         {
             try
@@ -41,6 +42,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] CategoriaDTO dto)
         {
             try
@@ -66,6 +68,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> Put(Guid id, [FromBody] CategoriaDTO dto)
         {
             try
@@ -99,6 +102,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(Guid id)
         {
             try

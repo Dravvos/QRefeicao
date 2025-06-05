@@ -44,11 +44,11 @@ namespace QRefeicao.BLL.Services
             if (dto.Preco <= 0)
                 throw new ArgumentOutOfRangeException("O preço deve ser maior que zero");
 
-            if (dto.Ordem <= 0)
+            if (dto.Ordem < 0)
                 throw new ArgumentOutOfRangeException("O menor índice é zero");
 
             var itens = await _repository.GetCardapioItensByCardapio(dto.CardapioId);
-            if (itens.Count(x => x.Ordem == dto.Ordem) > 0)
+            if (itens.Count(x => x.Ordem == dto.Ordem) > 0 && dto.Id.HasValue == false)
                 throw new ArgumentException("Já existe um item no cardápio com essa posição");
         }
 
