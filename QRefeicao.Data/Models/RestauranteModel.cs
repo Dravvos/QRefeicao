@@ -24,9 +24,6 @@ namespace QRefeicao.Data.Models
         [Required]
         public string Email { get; set; } = null!;
 
-        [Column("LogoURL")]
-        public string? LogoURL { get; set; }
-
         [Column("LogoBytes")]
         public byte[]? LogoBytes { get; set; }
 

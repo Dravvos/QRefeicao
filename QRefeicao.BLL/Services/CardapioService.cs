@@ -12,13 +12,17 @@ namespace QRefeicao.BLL.Services
     public class CardapioService : ICardapioService
     {
         private readonly ICardapioRepository _repository;
+        private readonly ICategoriaRepository _categoriaRepository;
+        private readonly IAssinaturaRepository _assinaturaRepository;
 
-        public CardapioService(ICardapioRepository repository)
+        public CardapioService(ICardapioRepository repository, ICategoriaRepository categoriaRepository, IAssinaturaRepository assinaturaRepository)
         {
             _repository = repository;
+            _categoriaRepository = categoriaRepository;
+            _assinaturaRepository = assinaturaRepository;
         }
 
-        private void ValidarDTO(CardapioDTO dto)
+        private async Task ValidarDTO(CardapioDTO dto)
         {
             if (string.IsNullOrEmpty(dto.Nome))
                 throw new ArgumentNullException("Digite um nome para o cardápio. Nem que seja 'Cardápio do restaurante abc'");
@@ -28,9 +32,18 @@ namespace QRefeicao.BLL.Services
 
             if (dto.IdTGIdioma == Guid.Empty)
                 throw new ArgumentNullException("Selecione o idioma do cardápio");
+
+            var categorias = await _categoriaRepository.GetCategoriasByRestaurante(dto.RestauranteId);
+            var idiomasCadastradosPeloRestaurante = categorias.Select(x => x.IdTGIdioma).Distinct().ToList();
+            if (categorias == null || categorias.Count == 0)
+                throw new Exception("O restaurante não possui categorias cadastradas. Cadastre uma categoria antes de criar o cardápio.");
+
+            if (idiomasCadastradosPeloRestaurante.Contains(dto.IdTGIdioma) == false)
+                throw new Exception("O idioma selecionado não está cadastrado para o restaurante. " +
+                                    "Por favor, cadastre uma categoria nesse idioma antes de criar o cardápio.");
         }
 
-        private async Task ValidarDTO(CardapioItemDTO dto)
+        private void ValidarDTO(CardapioItemDTO dto)
         {
             if (dto.CardapioId == Guid.Empty)
                 throw new ArgumentNullException("Selecione o cardápio");
@@ -47,14 +60,12 @@ namespace QRefeicao.BLL.Services
             if (dto.Ordem < 0)
                 throw new ArgumentOutOfRangeException("O menor índice é zero");
 
-            var itens = await _repository.GetCardapioItensByCardapio(dto.CardapioId);
-            if (itens.Count(x => x.Ordem == dto.Ordem) > 0 && dto.Id.HasValue == false)
-                throw new ArgumentException("Já existe um item no cardápio com essa posição");
+
         }
 
         public async Task CreateCardapio(CardapioDTO dto)
         {
-            ValidarDTO(dto);
+            await ValidarDTO(dto);
             dto.Id = Guid.NewGuid();
             dto.DataInclusao = DateTime.UtcNow;
             await _repository.CreateCardapio(dto);
@@ -62,7 +73,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task CreateCardapioItem(CardapioItemDTO dto)
         {
-            await ValidarDTO(dto);
+            ValidarDTO(dto);
             dto.Id = Guid.NewGuid();
             dto.DataInclusao = DateTime.UtcNow;
             await _repository.CreateCardapioItem(dto);
@@ -96,7 +107,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task UpdateCardapio(CardapioDTO dto)
         {
-            ValidarDTO(dto);
+            await ValidarDTO(dto);
             if (dto.Id.HasValue == false || dto.Id.Value == Guid.Empty)
                 throw new ArgumentNullException("Id inválido");
 
@@ -109,7 +120,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task UpdateCardapioItem(CardapioItemDTO dto)
         {
-            await ValidarDTO(dto);
+            ValidarDTO(dto);
             dto.DataAlteracao = DateTime.UtcNow;
             await _repository.UpdateCardapioItem(dto);
         }

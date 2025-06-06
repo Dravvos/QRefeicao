@@ -54,7 +54,6 @@ namespace QRefeicao.BLL.Repositories
             model.CorPrincipal = dto.CorPrincipal;
             model.CorSecundaria = dto.CorSecundaria;
             model.LogoBytes = dto.LogoBytes;
-            model.LogoURL = dto.LogoURL;
             model.Cidade = dto.Cidade;
             model.Estado = dto.Estado;
             model.Bairro = dto.Bairro;

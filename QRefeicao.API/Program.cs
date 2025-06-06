@@ -9,6 +9,7 @@ using System.Text;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using QRefeicao.Data;
+using QRefeicao.Identity.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,12 @@ builder.Services.AddDbContext<QRContext>(options =>
     var connection = Environment.GetEnvironmentVariable("QRConnection");
     options.UseNpgsql(connection);
 });
+
+builder.Services.AddDbContext<AuthContext>(options =>
+{
+    options.UseNpgsql(Environment.GetEnvironmentVariable("QRConnection"));
+});
+
 
 var jwtSecret = builder.Configuration.GetSection("JwtSettings:Secret");
 
@@ -92,6 +99,7 @@ builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IRestauranteRepository, RestauranteRepository>();
 builder.Services.AddScoped<ITabelaGeralRepository, TabelaGeralRepository>();
 builder.Services.AddScoped<ITabelaGeralItemRepository, TabelaGeralItemRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IAssinaturaService, AssinaturaService>();
 builder.Services.AddScoped<ICardapioService, CardapioService>();

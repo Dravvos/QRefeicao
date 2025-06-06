@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\QRefeicao.Data\QRefeicao.Data.csproj" />
     <ProjectReference Include="..\QRefeicao.DTO\QRefeicao.DTO.csproj" />
+    <ProjectReference Include="..\QRefeicao.Identity\QRefeicao.Identity.csproj" />
   </ItemGroup>
 
 </Project>

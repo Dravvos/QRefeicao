@@ -42,7 +42,7 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<IList<CategoriaDTO>> GetCategoriasByRestaurante(Guid restauranteId)
         {
-            var models = await con.Categoria.Where(x => x.RestauranteId == restauranteId).OrderBy(x => x.OrdemExibicao).ToListAsync();
+            var models = await con.Categoria.Where(x => x.RestauranteId == restauranteId).Include(x=>x.Idioma).OrderBy(x => x.OrdemExibicao).ToListAsync();
             return Map<List<CategoriaDTO>>.Convert(models);
         }
 
@@ -54,6 +54,7 @@ namespace QRefeicao.BLL.Repositories
             model.Nome = dto.Nome;
             model.OrdemExibicao = dto.OrdemExibicao;
             model.RestauranteId = dto.RestauranteId;
+            model.IdTGIdioma = dto.IdTGIdioma;
             model.DataAlteracao = dto.DataAlteracao;
             model.UsuarioAlteracao = dto.UsuarioAlteracao;
 

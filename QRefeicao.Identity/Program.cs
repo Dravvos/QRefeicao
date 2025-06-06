@@ -159,7 +159,7 @@ if (app.Environment.IsDevelopment())
     {
         cors.AllowAnyHeader();
         cors.AllowAnyMethod();
-        cors.WithOrigins("http://localhost:5173", "https://localhost:44346");
+        cors.WithOrigins("http://localhost:5173", "https://localhost:44352");
         cors.AllowCredentials();
     });
 }

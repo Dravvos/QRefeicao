@@ -57,7 +57,7 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<IList<CardapioDTO>> GetCardapioByRestaurante(Guid restauranteId)
         {
-            var model = await con.Cardapio.Where(x => x.RestauranteId == restauranteId).Include(x=>x.Restaurante).ToListAsync();
+            var model = await con.Cardapio.Where(x => x.RestauranteId == restauranteId).Include(x=>x.Restaurante).Include(x=>x.Idioma).ToListAsync();
             return Map<List<CardapioDTO>>.Convert(model);
         }
 
@@ -65,6 +65,7 @@ namespace QRefeicao.BLL.Repositories
         {
             var models = await con.CardapioItem.Where(x => x.CardapioId == cardapioId)
                 .Include(x => x.Cardapio.Restaurante)
+                .Include(x => x.Cardapio.Idioma)
                 .Include(x => x.Categoria)
                 .OrderBy(x => x.Categoria.OrdemExibicao)
                 .ThenBy(x => x.Ordem).ToListAsync();
@@ -74,13 +75,13 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<CardapioItemDTO> GetItemById(Guid id)
         {
-            var model = await con.CardapioItem.Include(x => x.Cardapio.Restaurante).Include(x => x.Categoria).FirstOrDefaultAsync(x => x.Id == id);
+            var model = await con.CardapioItem.Include(x => x.Cardapio.Restaurante).Include(x => x.Cardapio.Idioma).Include(x => x.Categoria).FirstOrDefaultAsync(x => x.Id == id);
             return Map<CardapioItemDTO>.Convert(model);
         }
 
         public async Task<IList<CardapioItemDTO>> GetItensByCardapio(Guid cardapioId)
         {
-            var models = await con.CardapioItem.Where(x => x.CardapioId == cardapioId).Include(x => x.Cardapio.Restaurante).Include(x => x.Categoria).ToListAsync();
+            var models = await con.CardapioItem.Where(x => x.CardapioId == cardapioId).Include(x => x.Cardapio.Idioma).Include(x => x.Cardapio.Restaurante).Include(x => x.Categoria).ToListAsync();
             return Map<List<CardapioItemDTO>>.Convert(models);
         }
 
