@@ -28,14 +28,8 @@ namespace QRefeicao.Data.Models
         [Column("Ativo")]
         public bool Ativo { get; set; }
 
-        [Required]
-        [Column("IdTGIdioma")]
-        public Guid IdTGIdioma { get; set; }
-
         [ForeignKey("RestauranteId")]
         public virtual RestauranteModel? Restaurante { get; set; }
 
-        [ForeignKey("IdTGIdioma")]
-        public virtual TabelaGeralItemModel? Idioma { get; set; }
     }
 }

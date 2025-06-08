@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QRefeicao.BLL.Services;
 using QRefeicao.BLL.Services.Interfaces;
 using QRefeicao.DTO;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,25 +11,53 @@ namespace QRefeicao.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class CategoriaController : ControllerBase
     {
         private readonly ICategoriaService _service;
+        private readonly ITraducaoService _traducaoService;
+        private readonly ITabelaGeralItemService _tabelaGeralItemService;
 
-        public CategoriaController(ICategoriaService service)
+        public CategoriaController(ICategoriaService service, ITraducaoService traducaoService, ITabelaGeralItemService tabelaGeralItemService)
         {
             _service = service;
+            _traducaoService = traducaoService;
+            _tabelaGeralItemService = tabelaGeralItemService;
         }
 
-        [HttpGet("{restauranteId}")]
+        [HttpGet("{restauranteId:guid}/{idiomaId}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetCategoriasByRestaurante(Guid restauranteId)
+        public async Task<IActionResult> GetCategoriasByRestaurante(Guid restauranteId, string idiomaId = "")
         {
             try
             {
                 var categorias = await _service.GetCategoriasByRestaurante(restauranteId);
                 if (categorias == null || categorias.Any() == false)
                     return NotFound();
+
+                if (string.IsNullOrEmpty(idiomaId) == false)
+                {
+                    var idioma = await _tabelaGeralItemService.GetByIdAsync(Guid.Parse(idiomaId));
+                    foreach (var item in categorias)
+                    {
+                        var nomeTraduzido = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);
+                        if (string.IsNullOrEmpty(nomeTraduzido))
+                        {
+                            await _traducaoService.CreateTraducao(new TraducaoDTO
+                            {
+                                Id = Guid.NewGuid(),
+                                IdiomaOriginal = "pt",
+                                TextoOriginal = item.Nome,
+                                IdiomaTraduzido = idioma.Sigla
+                            });
+                            item.Nome = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);
+                        }
+                        else
+                            item.Nome = nomeTraduzido;
+                        
+                    }
+                }
+
 
                 return Ok(categorias);
             }
@@ -52,7 +81,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCategoria(dto);
-                return Ok();
+                return Created();
             }
             catch (ArgumentException ex)
             {
@@ -67,7 +96,7 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         [Authorize]
         public async Task<IActionResult> Put(Guid id, [FromBody] CategoriaDTO dto)
         {
@@ -82,7 +111,7 @@ namespace QRefeicao.API.Controllers
                 dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.UpdateCategoria(dto);
 
-                return Ok();
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {
@@ -101,14 +130,14 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:guid}")]
         [Authorize]
         public async Task<IActionResult> Delete(Guid id)
         {
             try
             {
                 await _service.DeleteCategoria(id);
-                return Ok();
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {

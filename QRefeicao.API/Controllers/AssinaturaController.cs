@@ -94,7 +94,7 @@ namespace QRefeicao.API.Controllers
                 if (assinatura == null)
                     return UnprocessableEntity("Assinatura não pode ser nula");
                 await _service.CreateAssinatura(assinatura);
-                return Ok();
+                return Created();
             }
             catch (ArgumentException ex)
             {
@@ -119,7 +119,7 @@ namespace QRefeicao.API.Controllers
                 if (assinatura == null)
                     return UnprocessableEntity("Assinatura não pode ser nula");
                 await _service.UpdateAssinatura(assinatura);
-                return Ok();
+                return NoContent();
             }
             catch (ArgumentException ex)
             {
@@ -141,7 +141,7 @@ namespace QRefeicao.API.Controllers
                 if (id == Guid.Empty)
                     return UnprocessableEntity("Id da assinatura não pode ser vazio");
                 await _service.DeleteAssinatura(id);
-                return Ok();
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {

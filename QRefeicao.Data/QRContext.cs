@@ -25,6 +25,6 @@ namespace QRefeicao.Data
         public DbSet<CardapioModel> Cardapio { get; set; }
         public DbSet<CardapioItemModel> CardapioItem { get; set; }
         public DbSet<RestauranteModel> Restaurante { get; set; }
-
+        public DbSet<RestauranteIdiomaModel> RestauranteIdioma { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using QRefeicao.Data;
 using QRefeicao.Identity.Models;
+using QRevfeicao.Data.NoSQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddDbContext<AuthContext>(options =>
     options.UseNpgsql(Environment.GetEnvironmentVariable("QRConnection"));
 });
 
+builder.Services.AddSingleton<MongoDbContext>();
 
 var jwtSecret = builder.Configuration.GetSection("JwtSettings:Secret");
 
@@ -97,16 +99,20 @@ builder.Services.AddScoped<IAssinaturaRepository, AssinaturaRepository>();
 builder.Services.AddScoped<ICardapioRepository, CardapioRepository>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
 builder.Services.AddScoped<IRestauranteRepository, RestauranteRepository>();
+builder.Services.AddScoped<IRestauranteIdiomaRepository, RestauranteIdiomaRepository>();
 builder.Services.AddScoped<ITabelaGeralRepository, TabelaGeralRepository>();
 builder.Services.AddScoped<ITabelaGeralItemRepository, TabelaGeralItemRepository>();
+builder.Services.AddScoped<ITraducaoRepository, TraducaoRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IAssinaturaService, AssinaturaService>();
 builder.Services.AddScoped<ICardapioService, CardapioService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IRestauranteService, RestauranteService>();
+builder.Services.AddScoped<IRestauranteIdiomaService, RestauranteIdiomaService>();
 builder.Services.AddScoped<ITabelaGeralService, TabelaGeralService>();
 builder.Services.AddScoped<ITabelaGeralItemService, TabelaGeralItemService>();
+builder.Services.AddScoped<ITraducaoService, TraducaoService>();
 
 var app = builder.Build();
 

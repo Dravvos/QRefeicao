@@ -13,10 +13,14 @@ namespace QRefeicao.API.Controllers
     public class CardapioController : ControllerBase
     {
         private readonly ICardapioService _service;
+        private readonly ITabelaGeralItemService _tabelaGeralItemService;
+        private readonly ITraducaoService _traducaoService;
 
-        public CardapioController(ICardapioService service)
+        public CardapioController(ICardapioService service, ITabelaGeralItemService tabelaGeralItemService, ITraducaoService traducaoService)
         {
             _service = service;
+            _tabelaGeralItemService = tabelaGeralItemService;
+            _traducaoService = traducaoService;
         }
 
         [HttpGet("{restauranteId:guid}")]
@@ -49,7 +53,7 @@ namespace QRefeicao.API.Controllers
                     return UnprocessableEntity();
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCardapio(dto);
-                return Ok();
+                return Created();
             }
 
             catch (ArgumentException ex)
@@ -63,7 +67,7 @@ namespace QRefeicao.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-        
+
         [HttpPut("{id:guid}")]
         [Authorize]
         public async Task<IActionResult> Update(Guid id, [FromBody] CardapioDTO dto)
@@ -77,7 +81,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.UpdateCardapio(dto);
-                return Ok();
+                return NoContent();
             }
             catch (ArgumentException ex)
             {
@@ -105,7 +109,7 @@ namespace QRefeicao.API.Controllers
                     return UnprocessableEntity("Id do cardápio não pode ser vazio");
 
                 await _service.DeleteCardapio(id);
-                return Ok();
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {
@@ -148,19 +152,59 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpGet]
-        [Route("[action]/{id:guid}")]
+        [Route("[action]/{cardapioId:guid}/{idiomaId}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetItems(Guid id)
+        public async Task<IActionResult> GetItems(Guid cardapioId, string idiomaId = "")
         {
             try
             {
-                id = Guid.Parse(DesembaralharGuid(id.ToString()));
+                cardapioId = Guid.Parse(DesembaralharGuid(cardapioId.ToString()));
 
-                if (id == Guid.Empty)
+                if (cardapioId == Guid.Empty)
                     return UnprocessableEntity("Id do cardápio não pode ser vazio");
-                var itensCardapio = await _service.GetCardapioItensByCardapio(id);
+                var itensCardapio = await _service.GetCardapioItensByCardapio(cardapioId);
                 if (itensCardapio == null || itensCardapio.Any() == false)
                     return NotFound();
+
+                if (string.IsNullOrEmpty(idiomaId) == false)
+                {
+                    var idioma = await _tabelaGeralItemService.GetByIdAsync(Guid.Parse(idiomaId));
+                    foreach (var item in itensCardapio)
+                    {
+                        var nomeTraduzido = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);
+                        if (string.IsNullOrEmpty(nomeTraduzido))
+                        {
+                            await _traducaoService.CreateTraducao(new TraducaoDTO
+                            {
+                                Id = Guid.NewGuid(),
+                                IdiomaOriginal = item.Cardapio.Restaurante.Idioma.Sigla,
+                                TextoOriginal = item.Nome,
+                                IdiomaTraduzido = idioma.Sigla
+                            });
+                            
+                        }
+
+                        item.Nome = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);
+                        if (string.IsNullOrEmpty(item.Descricao) == false)
+                        {
+                            var descricaoTraduzida = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);
+                            if (string.IsNullOrEmpty(descricaoTraduzida))
+                            {
+                                await _traducaoService.CreateTraducao(new TraducaoDTO
+                                {
+                                    Id = Guid.NewGuid(),
+                                    IdiomaOriginal = item.Cardapio.Restaurante.Idioma.Sigla,
+                                    TextoOriginal = item.Descricao,
+                                    IdiomaTraduzido = idioma.Sigla
+                                });
+
+                            }
+                            item.Descricao = await _traducaoService.GetTraducao(item.Descricao, idioma.Sigla);
+                        }
+
+                    }
+
+                }
 
                 return Ok(itensCardapio);
             }
@@ -184,7 +228,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCardapioItem(dto);
-                return Ok();
+                return Created();
             }
             catch (ArgumentException ex)
             {
@@ -213,7 +257,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.UpdateCardapioItem(dto);
-                return Ok();
+                return NoContent();
             }
             catch (ArgumentException ex)
             {
@@ -241,7 +285,7 @@ namespace QRefeicao.API.Controllers
                 if (id == Guid.Empty)
                     return UnprocessableEntity("Id do item do cardápio não pode ser vazio");
                 await _service.DeleteCardapioItem(id);
-                return Ok();
+                return NoContent();
             }
             catch (KeyNotFoundException)
             {

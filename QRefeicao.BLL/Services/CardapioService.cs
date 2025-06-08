@@ -30,17 +30,10 @@ namespace QRefeicao.BLL.Services
             if (dto.RestauranteId == Guid.Empty)
                 throw new ArgumentNullException("Restaurante não selecionado");
 
-            if (dto.IdTGIdioma == Guid.Empty)
-                throw new ArgumentNullException("Selecione o idioma do cardápio");
-
             var categorias = await _categoriaRepository.GetCategoriasByRestaurante(dto.RestauranteId);
-            var idiomasCadastradosPeloRestaurante = categorias.Select(x => x.IdTGIdioma).Distinct().ToList();
             if (categorias == null || categorias.Count == 0)
                 throw new Exception("O restaurante não possui categorias cadastradas. Cadastre uma categoria antes de criar o cardápio.");
 
-            if (idiomasCadastradosPeloRestaurante.Contains(dto.IdTGIdioma) == false)
-                throw new Exception("O idioma selecionado não está cadastrado para o restaurante. " +
-                                    "Por favor, cadastre uma categoria nesse idioma antes de criar o cardápio.");
         }
 
         private void ValidarDTO(CardapioItemDTO dto)

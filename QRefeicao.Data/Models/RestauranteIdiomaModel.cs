@@ -8,24 +8,21 @@ using System.Threading.Tasks;
 
 namespace QRefeicao.Data.Models
 {
-    [Table("Cardapio")]
-    public class CardapioModel:BaseModel
+    [Table("RestauranteIdioma")]
+    public class RestauranteIdiomaModel:BaseModel
     {
-        [Required]
-        [Column("Nome")]
-        public string? Nome { get; set; }
-
         [Required]
         [Column("RestauranteId")]
         public Guid RestauranteId { get; set; }
 
-        [Column("Descrição")]
-        public string? Descricao { get; set; }
-
+        [Required]
+        [Column("IdTGIdioma")]
+        public Guid IdTGIdioma { get; set; }
 
         [ForeignKey("RestauranteId")]
         public virtual RestauranteModel? Restaurante { get; set; }
-        
-        public virtual List<CardapioItemModel> ItensCardapio { get; set; } = new List<CardapioItemModel>();
+
+        [ForeignKey("IdTGIdioma")]
+        public virtual TabelaGeralItemModel? Idioma { get; set; }
     }
 }

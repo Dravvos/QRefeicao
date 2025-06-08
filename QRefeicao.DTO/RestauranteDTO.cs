@@ -40,5 +40,7 @@ namespace QRefeicao.DTO
         public string CEP { get; set; } = null!;
         public string Telefone { get; set; } = null!;
         public string Email { get; set; } = null!;
+        public Guid IdTGIdioma { get; set; }
+        public TabelaGeralItemDTO? Idioma { get; set; }
     }
 }

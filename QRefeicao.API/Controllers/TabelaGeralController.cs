@@ -16,10 +16,13 @@ namespace QRefeicao.API.Controllers
     {
         private readonly ITabelaGeralItemService _tabelaGeralItemService;
         private readonly ITabelaGeralService _tabelaGeralService;
-        public TabelaGeralController(ITabelaGeralItemService tabelaGeralItemService, ITabelaGeralService tabelaGeralService)
+        private readonly IAssinaturaService _assinaturaService;
+
+        public TabelaGeralController(ITabelaGeralItemService tabelaGeralItemService, ITabelaGeralService tabelaGeralService, IAssinaturaService assinaturaService)
         {
             _tabelaGeralItemService = tabelaGeralItemService;
             _tabelaGeralService = tabelaGeralService;
+            _assinaturaService = assinaturaService;
         }
 
         [Route("[action]/{id}")]
@@ -149,7 +152,33 @@ namespace QRefeicao.API.Controllers
         {
             try
             {
+
+                HttpContext.Request.Cookies.TryGetValue("AuthToken", out var cookie);
+
+                if (string.IsNullOrEmpty(cookie))
+                    return Unauthorized();
+
                 var tabelasGerais = await _tabelaGeralItemService.GetAllItemsAsync(tabelaGeralId);
+
+                if (tabelasGerais == null || tabelasGerais.Any() == false)
+                    return NotFound();
+
+                var decodedToken = new JwtSecurityTokenHandler().ReadJwtToken(cookie);
+                var claims = decodedToken.Claims;
+
+                var usuarioId = Guid.Parse(claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value);
+
+                var assinatura = await _assinaturaService.GetAssinaturaByUserId(usuarioId);
+
+                if (assinatura.TipoAssinatura.Sigla == "BASE" && tabelasGerais.First().TabelaGeral.Nome == "Idioma" && tabelaGeralId.HasValue)
+                {
+                    tabelasGerais = tabelasGerais.Take(1);
+                }
+                else if (assinatura.TipoAssinatura.Sigla == "PRO" && tabelasGerais.First().TabelaGeral.Nome == "Idioma" && tabelaGeralId.HasValue)
+                {
+                    tabelasGerais = tabelasGerais.Take(3);
+                }
+
                 return Ok(tabelasGerais);
             }
             catch (Exception ex)
