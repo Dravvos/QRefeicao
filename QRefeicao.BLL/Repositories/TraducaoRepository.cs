@@ -29,12 +29,20 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<string?> GetTraducao(string texto, string idiomaTraduzido)
         {
-            var dict = new Dictionary<string, object>();
-            dict.Add("TextoOriginal", texto);
-            dict.Add("IdiomaTraduzido", idiomaTraduzido);
-            var filtro = FilterHelper<TRADUCAODTC_NOSQL>.BuildCombinedFilter(dict);
-            var traducao = await con.Traducao.FindAsync(filtro);
-            return (await traducao.FirstOrDefaultAsync())?.TextoTraduzido;
+            try
+            {
+                var dict = new Dictionary<string, object>();
+                dict.Add("TextoOriginal", texto);
+                dict.Add("IdiomaTraduzido", idiomaTraduzido);
+                var filtro = FilterHelper<TRADUCAODTC_NOSQL>.BuildCombinedFilter(dict);
+                var traducao = await con.Traducao.FindAsync(filtro);
+                return (await traducao.FirstOrDefaultAsync())?.TextoTraduzido;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return string.Empty;
+            }
         }
 
         public async Task<IList<TraducaoDTO>> GetTraducoes(string idiomaOriginal, string idiomaTraduzido)

@@ -201,9 +201,7 @@ namespace QRefeicao.API.Controllers
                             }
                             item.Descricao = await _traducaoService.GetTraducao(item.Descricao, idioma.Sigla);
                         }
-
                     }
-
                 }
 
                 return Ok(itensCardapio);

@@ -9,8 +9,7 @@ using System.Security.Claims;
 namespace QRefeicao.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
-    [Authorize]
+    [ApiController]    
     public class RestauranteController : ControllerBase
     {
         private readonly IRestauranteService _service;
@@ -23,6 +22,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetByUser()
         {
             try
@@ -55,6 +55,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create([FromBody] RestauranteDTO dto)
         {
             try
@@ -80,6 +81,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> Put(Guid id, [FromBody] RestauranteDTO dto)
         {
             try
@@ -112,6 +114,7 @@ namespace QRefeicao.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -134,10 +137,14 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpGet("Idioma/{restauranteId:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetIdiomas(Guid restauranteId)
         {
             try
             {
+                if (restauranteId == Guid.Empty)
+                    return UnprocessableEntity();
+
                 var dtos = await _restauranteIdiomaService.GetIdiomasRestaurante(restauranteId);
                 if (dtos == null || dtos.Any() == false)
                     return NotFound();
@@ -154,6 +161,7 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpPost("Idioma")]
+        [Authorize]
         public async Task<IActionResult> AssignIdioma([FromBody] List<RestauranteIdiomaDTO> dtos)
         {
             try
@@ -202,6 +210,7 @@ namespace QRefeicao.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("Idioma/{id:guid}")]
         public async Task<IActionResult> DeleteIdioma(Guid id)
         {
