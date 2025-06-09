@@ -94,7 +94,7 @@ namespace QRefeicao.API.Controllers
                 if (assinatura == null)
                     return UnprocessableEntity("Assinatura não pode ser nula");
                 await _service.CreateAssinatura(assinatura);
-                return Created();
+                return StatusCode(201);
             }
             catch (ArgumentException ex)
             {

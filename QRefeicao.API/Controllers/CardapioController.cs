@@ -53,7 +53,7 @@ namespace QRefeicao.API.Controllers
                     return UnprocessableEntity();
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCardapio(dto);
-                return Created();
+                return StatusCode(201);
             }
 
             catch (ArgumentException ex)
@@ -228,7 +228,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCardapioItem(dto);
-                return Created();
+                return StatusCode(201);
             }
             catch (ArgumentException ex)
             {

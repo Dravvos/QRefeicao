@@ -64,14 +64,10 @@ namespace QRefeicao.Data.Models
         public string Estado { get; set; } = null!;
 
         [Required]
-        [Column("IdTGIdioma")]
-        public Guid IdTGIdioma { get; set; }
-
-        [Required]
         [Column("UsuarioId")]
         public Guid UsuarioId { get; set; }
 
 
-        public virtual List<TabelaGeralItemModel> Idiomas { get; set; }
+        public virtual List<TabelaGeralItemModel> Idiomas { get; set; } = new List<TabelaGeralItemModel>();
     }
 }

@@ -50,8 +50,6 @@ namespace QRefeicao.BLL.Services
             
             if (string.IsNullOrEmpty(dto.Estado))
                 throw new ArgumentNullException("Preencha o estado do restaurante");
-
-
         }
 
         public async Task CreateRestaurante(RestauranteDTO dto)

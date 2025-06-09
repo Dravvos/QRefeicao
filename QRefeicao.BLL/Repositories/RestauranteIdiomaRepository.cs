@@ -37,7 +37,7 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<IList<RestauranteIdiomaDTO>> GetIdiomasRestaurante(Guid restauranteId)
         {
-            var model = await con.RestauranteIdioma.Where(x => x.RestauranteId == restauranteId).ToListAsync();
+            var model = await con.RestauranteIdioma.Where(x => x.RestauranteId == restauranteId).Include(x=>x.Restaurante).Include(x=>x.Idioma).ToListAsync();
             return Map<List<RestauranteIdiomaDTO>>.Convert(model);
         }
 

@@ -81,7 +81,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCategoria(dto);
-                return Created();
+                return StatusCode(201);
             }
             catch (ArgumentException ex)
             {

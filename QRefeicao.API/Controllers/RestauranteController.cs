@@ -64,7 +64,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateRestaurante(dto);
-                return Created();
+                return StatusCode(201);
             }
             catch (ArgumentException ex)
             {
@@ -133,7 +133,7 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-        [HttpGet("idioma/{restauranteId:guid}")]
+        [HttpGet("Idioma/{restauranteId:guid}")]
         public async Task<IActionResult> GetIdiomas(Guid restauranteId)
         {
             try
@@ -153,19 +153,41 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-        [HttpPost("idioma")]
-        public async Task<IActionResult> AssignIdioma(RestauranteIdiomaDTO dto)
+        [HttpPost("Idioma")]
+        public async Task<IActionResult> AssignIdioma([FromBody] List<RestauranteIdiomaDTO> dtos)
         {
             try
             {
-                if (dto == null)
-                    return UnprocessableEntity("Restaurante não pode estar nulo");
+                if (dtos == null || dtos.Any() == false)
+                    return UnprocessableEntity();
 
-                dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
+                var idiomasDto = dtos.Select(x => x.IdTGIdioma).ToList();
+                var idiomasRestaurante = await _restauranteIdiomaService.GetIdiomasRestaurante(dtos[0].RestauranteId);
+                if (idiomasRestaurante.Any() && idiomasRestaurante.All(x => idiomasDto.Contains(x.IdTGIdioma))) //Verifica se os idiomas salvos estão presentes no DTO
+                {
 
-                await _restauranteIdiomaService.Create(dto);
+                    foreach (var dto in dtos)
+                    {
+                        if (dto == null)
+                            return UnprocessableEntity();
 
-                return Created();
+                        dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
+                    }
+                    await _restauranteIdiomaService.Update(dtos);
+                    return NoContent();
+                }
+                else
+                {
+                    foreach (var dto in dtos)
+                    {
+                        if (dto == null)
+                            return UnprocessableEntity();
+
+                        dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
+                    }
+                    await _restauranteIdiomaService.Create(dtos);
+                    return StatusCode(201);
+                }
             }
             catch (ArgumentException ex)
             {
@@ -180,42 +202,7 @@ namespace QRefeicao.API.Controllers
             }
         }
 
-        [HttpPut("idioma/{id:guid}")]
-        public async Task<IActionResult> UpdateIdiomas(Guid id, [FromBody] RestauranteIdiomaDTO dto)
-        {
-            try
-            {
-                if (dto == null)
-                    return UnprocessableEntity("Restaurante não pode estar nulo");
-
-                if (dto.Id != id)
-                    return BadRequest();
-
-                dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
-
-                await _restauranteIdiomaService.Update(dto);
-
-                return NoContent();
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                    return StatusCode(500, ex.InnerException.Message);
-
-                return StatusCode(500, ex.Message);
-
-            }
-        }
-
-        [HttpDelete("idioma/{id:guid}")]
+        [HttpDelete("Idioma/{id:guid}")]
         public async Task<IActionResult> DeleteIdioma(Guid id)
         {
             try

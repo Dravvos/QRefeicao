@@ -10,8 +10,8 @@ namespace QRefeicao.BLL.Services.Interfaces
     public interface IRestauranteIdiomaService
     {
         Task<IList<RestauranteIdiomaDTO>> GetIdiomasRestaurante(Guid restauranteId);
-        Task Create(RestauranteIdiomaDTO dto);
-        Task Update(RestauranteIdiomaDTO dto);
+        Task Create(List<RestauranteIdiomaDTO> dtos);
+        Task Update(List<RestauranteIdiomaDTO> dtos);
         Task Delete(Guid id);
     }
 }

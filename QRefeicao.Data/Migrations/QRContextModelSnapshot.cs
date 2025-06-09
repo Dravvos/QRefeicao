@@ -152,10 +152,6 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("Descrição");
 
-                    b.Property<Guid>("IdTGIdioma")
-                        .HasColumnType("uuid")
-                        .HasColumnName("IdTGIdioma");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text")
@@ -175,8 +171,6 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnName("UsuarioInclusao");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdTGIdioma");
 
                     b.HasIndex("RestauranteId");
 
@@ -202,10 +196,6 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("DataInclusao");
 
-                    b.Property<Guid>("IdTGIdioma")
-                        .HasColumnType("uuid")
-                        .HasColumnName("IdTGIdioma");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text")
@@ -230,11 +220,50 @@ namespace QRefeicao.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RestauranteId");
+
+                    b.ToTable("Categoria");
+                });
+
+            modelBuilder.Entity("QRefeicao.Data.Models.RestauranteIdiomaModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTime?>("DataAlteracao")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("DataAlteracao");
+
+                    b.Property<DateTime>("DataInclusao")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("DataInclusao");
+
+                    b.Property<Guid>("IdTGIdioma")
+                        .HasColumnType("uuid")
+                        .HasColumnName("IdTGIdioma");
+
+                    b.Property<Guid>("RestauranteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("RestauranteId");
+
+                    b.Property<string>("UsuarioAlteracao")
+                        .HasColumnType("text")
+                        .HasColumnName("UsuarioAlteracao");
+
+                    b.Property<string>("UsuarioInclusao")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("UsuarioInclusao");
+
+                    b.HasKey("Id");
+
                     b.HasIndex("IdTGIdioma");
 
                     b.HasIndex("RestauranteId");
 
-                    b.ToTable("Categoria");
+                    b.ToTable("RestauranteIdioma");
                 });
 
             modelBuilder.Entity("QRefeicao.Data.Models.RestauranteModel", b =>
@@ -300,10 +329,6 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("bytea")
                         .HasColumnName("LogoBytes");
 
-                    b.Property<string>("LogoURL")
-                        .HasColumnType("text")
-                        .HasColumnName("LogoURL");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text")
@@ -358,6 +383,9 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("Descricao");
 
+                    b.Property<Guid?>("RestauranteModelId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Sigla")
                         .IsRequired()
                         .HasMaxLength(5)
@@ -378,6 +406,8 @@ namespace QRefeicao.Data.Migrations
                         .HasColumnName("UsuarioInclusao");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RestauranteModelId");
 
                     b.HasIndex("TabelaGeralId");
 
@@ -463,24 +493,27 @@ namespace QRefeicao.Data.Migrations
 
             modelBuilder.Entity("QRefeicao.Data.Models.CardapioModel", b =>
                 {
-                    b.HasOne("QRefeicao.Data.Models.TabelaGeralItemModel", "Idioma")
-                        .WithMany()
-                        .HasForeignKey("IdTGIdioma")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("QRefeicao.Data.Models.RestauranteModel", "Restaurante")
                         .WithMany()
                         .HasForeignKey("RestauranteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Idioma");
-
                     b.Navigation("Restaurante");
                 });
 
             modelBuilder.Entity("QRefeicao.Data.Models.CategoriaModel", b =>
+                {
+                    b.HasOne("QRefeicao.Data.Models.RestauranteModel", "Restaurante")
+                        .WithMany()
+                        .HasForeignKey("RestauranteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurante");
+                });
+
+            modelBuilder.Entity("QRefeicao.Data.Models.RestauranteIdiomaModel", b =>
                 {
                     b.HasOne("QRefeicao.Data.Models.TabelaGeralItemModel", "Idioma")
                         .WithMany()
@@ -501,6 +534,10 @@ namespace QRefeicao.Data.Migrations
 
             modelBuilder.Entity("QRefeicao.Data.Models.TabelaGeralItemModel", b =>
                 {
+                    b.HasOne("QRefeicao.Data.Models.RestauranteModel", null)
+                        .WithMany("Idiomas")
+                        .HasForeignKey("RestauranteModelId");
+
                     b.HasOne("QRefeicao.Data.Models.TabelaGeralModel", "TabelaGeral")
                         .WithMany()
                         .HasForeignKey("TabelaGeralId")
@@ -513,6 +550,11 @@ namespace QRefeicao.Data.Migrations
             modelBuilder.Entity("QRefeicao.Data.Models.CardapioModel", b =>
                 {
                     b.Navigation("ItensCardapio");
+                });
+
+            modelBuilder.Entity("QRefeicao.Data.Models.RestauranteModel", b =>
+                {
+                    b.Navigation("Idiomas");
                 });
 #pragma warning restore 612, 618
         }

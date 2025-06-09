@@ -163,22 +163,7 @@ namespace QRefeicao.API.Controllers
                 if (tabelasGerais == null || tabelasGerais.Any() == false)
                     return NotFound();
 
-                var decodedToken = new JwtSecurityTokenHandler().ReadJwtToken(cookie);
-                var claims = decodedToken.Claims;
-
-                var usuarioId = Guid.Parse(claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value);
-
-                var assinatura = await _assinaturaService.GetAssinaturaByUserId(usuarioId);
-
-                if (assinatura.TipoAssinatura.Sigla == "BASE" && tabelasGerais.First().TabelaGeral.Nome == "Idioma" && tabelaGeralId.HasValue)
-                {
-                    tabelasGerais = tabelasGerais.Take(1);
-                }
-                else if (assinatura.TipoAssinatura.Sigla == "PRO" && tabelasGerais.First().TabelaGeral.Nome == "Idioma" && tabelaGeralId.HasValue)
-                {
-                    tabelasGerais = tabelasGerais.Take(3);
-                }
-
+            
                 return Ok(tabelasGerais);
             }
             catch (Exception ex)
