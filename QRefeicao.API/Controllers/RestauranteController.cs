@@ -9,7 +9,7 @@ using System.Security.Claims;
 namespace QRefeicao.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]    
+    [ApiController]
     public class RestauranteController : ControllerBase
     {
         private readonly IRestauranteService _service;
@@ -169,33 +169,23 @@ namespace QRefeicao.API.Controllers
                 if (dtos == null || dtos.Any() == false)
                     return UnprocessableEntity();
 
-                var idiomasDto = dtos.Select(x => x.IdTGIdioma).ToList();
-                var idiomasRestaurante = await _restauranteIdiomaService.GetIdiomasRestaurante(dtos[0].RestauranteId);
-                if (idiomasRestaurante.Any() && idiomasRestaurante.All(x => idiomasDto.Contains(x.IdTGIdioma))) //Verifica se os idiomas salvos estão presentes no DTO
+                foreach (var dto in dtos)
                 {
+                    if (dto == null)
+                        return UnprocessableEntity();
 
-                    foreach (var dto in dtos)
-                    {
-                        if (dto == null)
-                            return UnprocessableEntity();
-
-                        dto.UsuarioAlteracao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
-                    }
-                    await _restauranteIdiomaService.Update(dtos);
-                    return NoContent();
+                    dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 }
-                else
+
+                var restauranteIdiomas = await _restauranteIdiomaService.GetIdiomasRestaurante(dtos.First().RestauranteId);
+                foreach (var item in restauranteIdiomas)
                 {
-                    foreach (var dto in dtos)
-                    {
-                        if (dto == null)
-                            return UnprocessableEntity();
-
-                        dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
-                    }
-                    await _restauranteIdiomaService.Create(dtos);
-                    return StatusCode(201);
+                    await _restauranteIdiomaService.Delete(item.Id.Value);
                 }
+
+                await _restauranteIdiomaService.Create(dtos);
+
+                return StatusCode(201);
             }
             catch (ArgumentException ex)
             {

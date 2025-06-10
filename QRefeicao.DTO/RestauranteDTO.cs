@@ -31,16 +31,7 @@ namespace QRefeicao.DTO
         public string? CorPrincipal { get; set; }
         public string? CorSecundaria { get; set; }
         public Guid UsuarioId { get; set; }
-        public string Endereco { get; set; } = null!;
-        public uint Numero { get; set; }
-        public string? Complemento { get; set; }
-        public string Bairro { get; set; } = null!;
-        public string Cidade { get; set; } = null!;
-        public string Estado { get; set; } = null!;
-        public string CEP { get; set; } = null!;
-        public string Telefone { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public Guid IdTGIdioma { get; set; }
-        public TabelaGeralItemDTO? Idioma { get; set; }
+
+        public List<TabelaGeralItemDTO> Idiomas { get; set; } = new List<TabelaGeralItemDTO>();
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QRefeicao.Data;
@@ -11,9 +12,11 @@ using QRefeicao.Data;
 namespace QRefeicao.Data.Migrations
 {
     [DbContext(typeof(QRContext))]
-    partial class QRContextModelSnapshot : ModelSnapshot
+    [Migration("20250610185755_RestauranteUpdates")]
+    partial class RestauranteUpdates
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

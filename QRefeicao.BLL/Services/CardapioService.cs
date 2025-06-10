@@ -14,12 +14,14 @@ namespace QRefeicao.BLL.Services
         private readonly ICardapioRepository _repository;
         private readonly ICategoriaRepository _categoriaRepository;
         private readonly IAssinaturaRepository _assinaturaRepository;
+        private readonly IUserRepository _userRepository;
 
-        public CardapioService(ICardapioRepository repository, ICategoriaRepository categoriaRepository, IAssinaturaRepository assinaturaRepository)
+        public CardapioService(ICardapioRepository repository, ICategoriaRepository categoriaRepository, IAssinaturaRepository assinaturaRepository, IUserRepository userRepository)
         {
             _repository = repository;
             _categoriaRepository = categoriaRepository;
             _assinaturaRepository = assinaturaRepository;
+            _userRepository = userRepository;
         }
 
         private async Task ValidarDTO(CardapioDTO dto)
@@ -59,6 +61,20 @@ namespace QRefeicao.BLL.Services
         public async Task CreateCardapio(CardapioDTO dto)
         {
             await ValidarDTO(dto);
+
+            var userId = await _userRepository.GetUserId(dto.UsuarioInclusao);
+            var assinatura = await _assinaturaRepository.GetAssinaturaByUserId(userId);
+
+            var cardapios = await _repository.GetCardapioByRestaurante(dto.RestauranteId);
+            if (assinatura.TipoAssinatura.Sigla == "BASE" && cardapios.Count == 1)
+            {
+                throw new Exception("A assinatura BÁSICA permite a criação de apenas um único cardápio");
+            }
+            else if (assinatura.TipoAssinatura.Sigla == "PRO" && cardapios.Count == 3)
+            {
+                throw new Exception("A assinatura PROFISSIONAL permite a criação de apenas 3 cardápios");
+            }
+
             dto.Id = Guid.NewGuid();
             dto.DataInclusao = DateTime.UtcNow;
             await _repository.CreateCardapio(dto);
@@ -67,6 +83,29 @@ namespace QRefeicao.BLL.Services
         public async Task CreateCardapioItem(CardapioItemDTO dto)
         {
             ValidarDTO(dto);
+
+            var userId = await _userRepository.GetUserId(dto.UsuarioInclusao);
+            var assinatura = await _assinaturaRepository.GetAssinaturaByUserId(userId);
+            if (assinatura.TipoAssinatura.Sigla == "BASE" && (string.IsNullOrEmpty(dto.ImagemURL) == false || string.IsNullOrEmpty(dto.ImagemBase64) == false))
+            {
+                throw new Exception("A assinatura BÁSICA não permite cadastrar foto dos pratos/itens");
+            }
+
+            var itensCardapaio = await _repository.GetItensByCardapio(dto.CardapioId);
+
+            if (assinatura.TipoAssinatura.Sigla == "BASE" && itensCardapaio.Count == 50)
+            {
+                throw new Exception("Você atingiu o limite de 50 itens da assinatura BÁSICA");
+            }
+
+            var qtdImagensBase64 = itensCardapaio.Select(x => x.ImagemBase64).Distinct().Count();
+            var qtdImagensURL = itensCardapaio.Select(x => x.ImagemURL).Distinct().Count();
+            var qtdTotalImagens = qtdImagensBase64 + qtdImagensURL;
+            if (assinatura.TipoAssinatura.Sigla == "PRO" && qtdTotalImagens == 100)
+            {
+                throw new Exception("Você atingiu o limite de 100 fotos dos pratos/itens da assinatura PROFISSIONAL");
+            }
+
             dto.Id = Guid.NewGuid();
             dto.DataInclusao = DateTime.UtcNow;
             await _repository.CreateCardapioItem(dto);
