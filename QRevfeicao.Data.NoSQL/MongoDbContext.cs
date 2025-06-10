@@ -18,20 +18,16 @@ namespace QRevfeicao.Data.NoSQL
             var mongoConnectionString = Environment.GetEnvironmentVariable("MongoDBConnection");
             var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
 
-            var caCert = new X509Certificate2(@"C:\Users\supero\mongodb-ca.crt");
-            var certificadoCliente = File.ReadAllBytes(@"C:\Users\supero\mongodb-client.pem");
-            var clientCert = new X509Certificate(certificadoCliente);
+            var caCert = new X509Certificate2(@"C:\Users\Daniel\mongodb-ca.crt");
+            var clientCert = new X509Certificate2(@"C:\Users\Daniel\mongodb-client.pfx", "YqY,&soTB_fQ!r5#",
+                 X509KeyStorageFlags.MachineKeySet |
+            X509KeyStorageFlags.PersistKeySet |
+            X509KeyStorageFlags.Exportable);
 
             settings.SslSettings = new SslSettings
             {
                 ClientCertificates = new List<X509Certificate> { clientCert },
-                ServerCertificateValidationCallback = (sender, cert, chain, errors) =>
-                {
-                    var newChain = new X509Chain();
-                    newChain.ChainPolicy.ExtraStore.Add(caCert);
-                    newChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
-                    return newChain.Build((X509Certificate2)cert);
-                }
+                ServerCertificateValidationCallback = (sender, cert, chain, errors) => true
             };
 
             var client = new MongoClient(settings);

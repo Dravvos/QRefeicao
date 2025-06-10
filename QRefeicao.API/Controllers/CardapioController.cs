@@ -177,27 +177,25 @@ namespace QRefeicao.API.Controllers
                             await _traducaoService.CreateTraducao(new TraducaoDTO
                             {
                                 Id = Guid.NewGuid(),
-                                IdiomaOriginal = item.Cardapio.Restaurante.Idioma.Sigla,
+                                IdiomaOriginal = "pt",
                                 TextoOriginal = item.Nome,
                                 IdiomaTraduzido = idioma.Sigla
-                            });
-                            
+                            });                            
                         }
 
                         item.Nome = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);
                         if (string.IsNullOrEmpty(item.Descricao) == false)
                         {
-                            var descricaoTraduzida = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);
+                            var descricaoTraduzida = await _traducaoService.GetTraducao(item.Descricao, idioma.Sigla);
                             if (string.IsNullOrEmpty(descricaoTraduzida))
                             {
                                 await _traducaoService.CreateTraducao(new TraducaoDTO
                                 {
                                     Id = Guid.NewGuid(),
-                                    IdiomaOriginal = item.Cardapio.Restaurante.Idioma.Sigla,
+                                    IdiomaOriginal = "pt",
                                     TextoOriginal = item.Descricao,
                                     IdiomaTraduzido = idioma.Sigla
                                 });
-
                             }
                             item.Descricao = await _traducaoService.GetTraducao(item.Descricao, idioma.Sigla);
                         }
