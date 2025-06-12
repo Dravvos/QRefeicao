@@ -16,7 +16,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRefeicao.BLL", "QRefeicao.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRefeicao.Data", "QRefeicao.Data\QRefeicao.Data.csproj", "{7CC06CA7-FCA7-425F-8D23-92DEEDFAE851}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRevfeicao.Data.NoSQL", "QRevfeicao.Data.NoSQL\QRevfeicao.Data.NoSQL.csproj", "{EF4756B8-A42D-4251-8F74-435CCCEECF95}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRefeicao.Data.NoSQL", "QRevfeicao.Data.NoSQL\QRefeicao.Data.NoSQL.csproj", "{EF4756B8-A42D-4251-8F74-435CCCEECF95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
