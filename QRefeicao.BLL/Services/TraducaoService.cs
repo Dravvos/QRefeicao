@@ -1,14 +1,9 @@
 ﻿using QRefeicao.BLL.Repositories.Interfaces;
 using QRefeicao.BLL.Services.Interfaces;
 using QRefeicao.DTO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace QRefeicao.BLL.Services
 {

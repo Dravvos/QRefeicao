@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using QRefeicao.DTO;
+﻿using QRefeicao.DTO;
 
 namespace QRefeicao.BLL.Repositories.Interfaces
 {

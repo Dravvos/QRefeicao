@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Net;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using QRefeicao.BLL.Repositories.Interfaces;
+﻿using QRefeicao.BLL.Repositories.Interfaces;
 using QRefeicao.BLL.Services.Interfaces;
 using QRefeicao.DTO;
 

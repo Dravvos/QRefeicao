@@ -1,12 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace QRevfeicao.Data.NoSQL.Models
+namespace QRefeicao.Data.NoSQL.Models
 {
     public class TRADUCAODTC_NOSQL
     {

@@ -1,7 +1,7 @@
 ﻿using MongoDB.Driver;
 using System.Linq.Expressions;
 
-namespace QRevfeicao.Data.NoSQL
+namespace QRefeicao.Data.NoSQL
 {
     public static class FilterHelper<T>
     {

@@ -1,14 +1,8 @@
-﻿using MongoDB.Driver;
-using QRefeicao.BLL.Repositories.Interfaces;
+﻿using QRefeicao.BLL.Repositories.Interfaces;
 using QRefeicao.DTO;
-using QRevfeicao.Data.NoSQL;
-using QRevfeicao.Data.NoSQL.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ZstdSharp.Unsafe;
+using QRefeicao.Data.NoSQL;
+using QRefeicao.Data.NoSQL.Models;
+using MongoDB.Driver;
 
 namespace QRefeicao.BLL.Repositories
 {

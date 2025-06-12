@@ -6,11 +6,10 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Mapster;
 using Microsoft.EntityFrameworkCore;
 using QRefeicao.Data;
 using QRefeicao.Identity.Models;
-using QRevfeicao.Data.NoSQL;
+using QRefeicao.Data.NoSQL;
 
 var builder = WebApplication.CreateBuilder(args);
 

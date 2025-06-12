@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using QRefeicao.BLL.Repositories.Interfaces;
 using QRefeicao.Data;
 using QRefeicao.Data.Models;
