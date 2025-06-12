@@ -1,4 +1,4 @@
-name: Deploy to MEICaixa BackEnd
+name: Deploy to QRefeição BackEnd
 
 on:
   push:
