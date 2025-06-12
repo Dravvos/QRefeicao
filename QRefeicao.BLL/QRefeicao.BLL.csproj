@@ -14,7 +14,7 @@
     <ProjectReference Include="..\QRefeicao.Data\QRefeicao.Data.csproj" />
     <ProjectReference Include="..\QRefeicao.DTO\QRefeicao.DTO.csproj" />
     <ProjectReference Include="..\QRefeicao.Identity\QRefeicao.Identity.csproj" />
-    <ProjectReference Include="..\QRevfeicao.Data.NoSQL\QRefeicao.Data.NoSQL.csproj" />
+    <ProjectReference Include="..\QRefeicao.Data.NoSQL\QRefeicao.Data.NoSQL.csproj" />
   </ItemGroup>
 
 </Project>
