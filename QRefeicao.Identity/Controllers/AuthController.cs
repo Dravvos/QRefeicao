@@ -53,6 +53,10 @@ namespace QRefeicao.Identity.Controllers
                     new Claim(ClaimTypes.Surname,dto.Sobrenome),
                     new Claim(ClaimTypes.Role, IdentityConfiguration.Client)
               });
+
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                await _userManager.ConfirmEmailAsync(user,token);
+
                 return Created();
             }
             else
