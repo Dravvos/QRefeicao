@@ -1,13 +1,14 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using QRefeicao.Identity.Models;
+using QRefeicao.API;
 using QRefeicao.Identity;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using QRefeicao.Identity.Service;
 using QRefeicao.Identity.Initializer;
+using QRefeicao.Identity.Models;
+using QRefeicao.Identity.Service;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -148,6 +149,8 @@ builder.Services.AddAntiforgery(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<CustomMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

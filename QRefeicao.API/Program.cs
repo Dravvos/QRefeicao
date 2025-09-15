@@ -1,15 +1,16 @@
-using QRefeicao.BLL.Repositories.Interfaces;
-using QRefeicao.BLL.Repositories;
-using QRefeicao.BLL.Services.Interfaces;
-using QRefeicao.BLL.Services;
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using QRefeicao.API;
+using QRefeicao.BLL.Repositories;
+using QRefeicao.BLL.Repositories.Interfaces;
+using QRefeicao.BLL.Services;
+using QRefeicao.BLL.Services.Interfaces;
 using QRefeicao.Data;
-using QRefeicao.Identity.Models;
 using QRefeicao.Data.NoSQL;
+using QRefeicao.Identity.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -114,6 +115,8 @@ builder.Services.AddScoped<ITabelaGeralItemService, TabelaGeralItemService>();
 builder.Services.AddScoped<ITraducaoService, TraducaoService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<CustomMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
