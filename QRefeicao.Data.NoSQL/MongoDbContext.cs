@@ -12,9 +12,16 @@ namespace QRefeicao.Data.NoSQL
         {
             var mongoConnectionString = Environment.GetEnvironmentVariable("MongoDBConnection");
             var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
-
-            var caCert = new X509Certificate2(@"C:\Users\supero\mongodb-ca.crt");
-            var clientCert = new X509Certificate2(@"C:\Users\supero\mongodb-client.pfx", "YqY,&soTB_fQ!r5#",
+            
+            string crtPath = @"C:\Users\supero\mongodb-ca.crt";
+            string pfxPath = @"C:\Users\supero\mongodb-client.pfx";
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                crtPath = "/etc/mongodb/certs/mongodb-ca.crt";
+                pfxPath = "/etc/mongodb/certs/mongodb-client.pfx";
+            }
+            var caCert = new X509Certificate2(crtPath);
+            var clientCert = new X509Certificate2(pfxPath, Environment.GetEnvironmentVariable("CertificatePassword"),
                  X509KeyStorageFlags.MachineKeySet |
             X509KeyStorageFlags.PersistKeySet |
             X509KeyStorageFlags.Exportable);
