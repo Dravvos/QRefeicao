@@ -18,11 +18,15 @@ namespace QRefeicao.BLL.Repositories
         public async Task CreateTraducao(TraducaoDTO dto)
         {
             var dtc = Map<TRADUCAODTC_NOSQL>.Convert(dto);
+            if(con==null)
+                throw new ArgumentNullException("Conexão com banco de dados não estabelecida");
             await con.Traducao.InsertOneAsync(dtc);
         }
 
         public async Task<string?> GetTraducao(string texto, string idiomaTraduzido)
         {
+            if (con == null)
+                throw new ArgumentNullException("Conexão com banco de dados não estabelecida");
             try
             {
                 var dict = new Dictionary<string, object>();
@@ -41,6 +45,8 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<IList<TraducaoDTO>> GetTraducoes(string idiomaOriginal, string idiomaTraduzido)
         {
+            if (con == null)
+                throw new ArgumentNullException("Conexão com banco de dados não estabelecida");
             var dict = new Dictionary<string, object>();
             dict.Add("IdiomaOriginal", idiomaOriginal);
             dict.Add("IdiomaTraduzido", idiomaTraduzido);
@@ -51,6 +57,8 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task UpdateTraducao(TraducaoDTO dto)
         {
+            if (con == null)
+                throw new ArgumentNullException("Conexão com banco de dados não estabelecida");
             var filtro = FilterHelper<TRADUCAODTC_NOSQL>.BuildEqualityFilter("Id", dto.Id);
 
             var updateDefinition = Builders<TRADUCAODTC_NOSQL>.Update
