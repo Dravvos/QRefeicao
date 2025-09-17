@@ -29,13 +29,13 @@ namespace QRefeicao.Data.NoSQL
             settings.ConnectTimeout = TimeSpan.FromSeconds(10);
             string certPath = @"C:\Users\supero\mongodb-ca.crt";
             string pfxPath = @"C:\Users\supero\mongodb-client.pfx";
-            
+
             var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            
+
             if (ambiente == "Production")
             {
                 certPath = "/etc/mongodb/certs/mongodb-ca.crt";
-                pfxPath =  "/etc/mongodb/certs/mongodb-client.pfx";
+                pfxPath = "/etc/mongodb/certs/mongodb-client.pfx";
             }
             var caCert = new X509Certificate2(certPath);
 
@@ -43,9 +43,12 @@ namespace QRefeicao.Data.NoSQL
                  X509KeyStorageFlags.MachineKeySet |
             X509KeyStorageFlags.PersistKeySet |
             X509KeyStorageFlags.Exportable);
-            
+
             var certificationCollection = new X509Certificate2Collection { caCert, clientCert };
-            
+            if (ambiente == "Production")
+            {
+                certificationCollection.Remove(clientCert);
+            }
             settings.SslSettings = new SslSettings
             {
                 ClientCertificates = certificationCollection,
