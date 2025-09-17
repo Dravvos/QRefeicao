@@ -35,7 +35,7 @@ namespace QRefeicao.API.Controllers
                 if (categorias == null || categorias.Any() == false)
                     return NotFound();
 
-                if (string.IsNullOrEmpty(idiomaId) == false)
+                if (string.IsNullOrEmpty(idiomaId) == false && idiomaId != "undefined")
                 {
                     var idioma = await _tabelaGeralItemService.GetByIdAsync(Guid.Parse(idiomaId));
                     if (idioma == null)
