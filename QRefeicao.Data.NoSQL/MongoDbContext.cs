@@ -35,15 +35,7 @@ namespace QRefeicao.Data.NoSQL
             if (ambiente == "Production")
             {
                 certPath = "/etc/mongodb/certs/mongodb-ca.crt";
-                pfxPath =  "/etc/mongodb/certs/mongodb-server.pem";
-
-                _logger.LogInformation("Ambiente de produção detectado");
-                Console.WriteLine("Ambiente de produção detectado");
-            }
-            else
-            {
-                _logger.LogInformation("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
-                Console.WriteLine("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
+                pfxPath =  "/etc/mongodb/certs/mongodb-client.pfx";
             }
             var caCert = new X509Certificate2(certPath);
 
@@ -51,15 +43,9 @@ namespace QRefeicao.Data.NoSQL
                  X509KeyStorageFlags.MachineKeySet |
             X509KeyStorageFlags.PersistKeySet |
             X509KeyStorageFlags.Exportable);
-            if (ambiente == "Production")
-            {
-                clientCert = new X509Certificate2(pfxPath);
-            }
+            
             var certificationCollection = new X509Certificate2Collection { caCert, clientCert };
-            if (ambiente == "Production")
-            {
-                certificationCollection.RemoveAt(1);
-            }
+            
             settings.SslSettings = new SslSettings
             {
                 ClientCertificates = certificationCollection,
