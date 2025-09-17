@@ -38,7 +38,8 @@ namespace QRefeicao.Data.NoSQL
                  X509KeyStorageFlags.MachineKeySet |
             X509KeyStorageFlags.PersistKeySet |
             X509KeyStorageFlags.Exportable);
-            var certificationCollection = new X509Certificate2Collection { caCert};
+            //var serverCert = new X509Certificate2(pfxPath);
+            var certificationCollection = new X509Certificate2Collection { caCert, clientCert };
             settings.SslSettings = new SslSettings
             {
                 ClientCertificates = certificationCollection,
