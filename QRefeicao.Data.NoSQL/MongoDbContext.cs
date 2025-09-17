@@ -13,17 +13,15 @@ namespace QRefeicao.Data.NoSQL
         public MongoDbContext(ILogger<MongoDbContext> logger)
         {
             _logger = logger;
-        }
-        public MongoDbContext()
-        {
+
             var mongoConnectionString = Environment.GetEnvironmentVariable("MongoDBConnection");
             var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
 
-            string crtPath = @"C:\Users\supero\mongodb-ca.crt";
+            string certPath = @"C:\Users\supero\mongodb-ca.crt";
             string pfxPath = @"C:\Users\supero\mongodb-client.pfx";
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
             {
-                crtPath = "/etc/mongodb/certs/mongodb-ca.crt";
+                certPath = "/etc/mongodb/certs/mongodb-ca.crt";
                 pfxPath = "/etc/mongodb/certs/mongodb-client.pfx";
 
                 _logger.LogInformation("Ambiente de produção detectado");
@@ -34,23 +32,23 @@ namespace QRefeicao.Data.NoSQL
                 _logger.LogInformation("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
                 Console.WriteLine("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
             }
-            var caCert = new X509Certificate2(crtPath);
+            var caCert = new X509Certificate2(certPath);
+            
             var clientCert = new X509Certificate2(pfxPath, Environment.GetEnvironmentVariable("CertificatePassword"),
                  X509KeyStorageFlags.MachineKeySet |
             X509KeyStorageFlags.PersistKeySet |
             X509KeyStorageFlags.Exportable);
-
+            var certificationCollection = new X509Certificate2Collection { caCert, clientCert};
             settings.SslSettings = new SslSettings
             {
-                ClientCertificates = new List<X509Certificate> { clientCert },
-                ServerCertificateValidationCallback = (sender, cert, chain, errors) => true
+                ClientCertificates = certificationCollection,
+                ServerCertificateValidationCallback = (sender, cert, chain, errors) => true,
+                CheckCertificateRevocation = false,
             };
 
             var client = new MongoClient(settings);
 
             _database = client.GetDatabase("QRefeicao");
-
-
         }
 
         public IMongoCollection<TRADUCAODTC_NOSQL> Traducao => _database.GetCollection<TRADUCAODTC_NOSQL>("Traducao");
