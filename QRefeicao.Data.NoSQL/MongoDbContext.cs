@@ -15,11 +15,27 @@ namespace QRefeicao.Data.NoSQL
             _logger = logger;
 
             var mongoConnectionString = Environment.GetEnvironmentVariable("MongoDBConnection");
+            if (string.IsNullOrWhiteSpace(mongoConnectionString))
+            {
+                _logger.LogInformation("Sem string de conexão");
+                Console.WriteLine("Sem string de conexão");
+            }
+            else
+            {
+                _logger.LogInformation(mongoConnectionString);
+                Console.WriteLine(mongoConnectionString);
+            }
             var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
             settings.ConnectTimeout = TimeSpan.FromSeconds(10);
             string certPath = @"C:\Users\supero\mongodb-ca.crt";
             string pfxPath = @"C:\Users\supero\mongodb-client.pfx";
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            
+            var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            
+            _logger.LogInformation("Ambiente: " + ambiente);
+            Console.WriteLine("Ambiente: " + ambiente);
+
+            if (ambiente == "Production")
             {
                 certPath = "/etc/mongodb/certs/mongodb-ca.crt";
                 pfxPath = "/etc/mongodb/certs/mongodb-client.pfx";
@@ -33,7 +49,7 @@ namespace QRefeicao.Data.NoSQL
                 Console.WriteLine("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
             }
             var caCert = new X509Certificate2(certPath);
-            
+
             var clientCert = new X509Certificate2(pfxPath, Environment.GetEnvironmentVariable("CertificatePassword"),
                  X509KeyStorageFlags.MachineKeySet |
             X509KeyStorageFlags.PersistKeySet |
