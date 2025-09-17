@@ -21,6 +21,8 @@ namespace QRefeicao.Data.NoSQL
                 {
                     crtPath = "/etc/mongodb/certs/mongodb-ca.crt";
                     pfxPath = "/etc/mongodb/certs/mongodb-client.pfx";
+
+                    Console.WriteLine("Ambiente de produção detectado");
                 }
                 else
                 {
