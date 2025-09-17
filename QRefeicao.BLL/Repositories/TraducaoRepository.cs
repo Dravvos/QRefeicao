@@ -20,6 +20,8 @@ namespace QRefeicao.BLL.Repositories
             var dtc = Map<TRADUCAODTC_NOSQL>.Convert(dto);
             if(con is null || con.Traducao is null)
                 throw new ArgumentNullException("Conexão com banco de dados não estabelecida");
+            if(dto is null)
+                throw new ArgumentNullException("DTO nulo");
             await con.Traducao.InsertOneAsync(dtc);
         }
 
