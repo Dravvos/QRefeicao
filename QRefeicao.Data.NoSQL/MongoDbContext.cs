@@ -32,9 +32,6 @@ namespace QRefeicao.Data.NoSQL
             
             var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
             
-            _logger.LogInformation("Ambiente: " + ambiente);
-            Console.WriteLine("Ambiente: " + ambiente);
-
             if (ambiente == "Production")
             {
                 certPath = "/etc/mongodb/certs/mongodb-ca.crt";
@@ -59,10 +56,10 @@ namespace QRefeicao.Data.NoSQL
                 clientCert = new X509Certificate2(pfxPath);
             }
             var certificationCollection = new X509Certificate2Collection { caCert, clientCert };
-            /*if (ambiente == "Production")
+            if (ambiente == "Production")
             {
                 certificationCollection.RemoveAt(1);
-            }*/
+            }
             settings.SslSettings = new SslSettings
             {
                 ClientCertificates = certificationCollection,
