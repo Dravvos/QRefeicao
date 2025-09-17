@@ -164,11 +164,13 @@ namespace QRefeicao.API.Controllers
                     return UnprocessableEntity("Id do cardápio não pode ser vazio");
                 var itensCardapio = await _service.GetCardapioItensByCardapio(cardapioId);
                 if (itensCardapio == null || itensCardapio.Any() == false)
-                    return NotFound();
+                    return NotFound("Itens do cardápio não encontrados");
 
                 if (string.IsNullOrEmpty(idiomaId) == false)
                 {
                     var idioma = await _tabelaGeralItemService.GetByIdAsync(Guid.Parse(idiomaId));
+                    if (idioma == null)
+                        return NotFound("Idioma não encontrado");
                     foreach (var item in itensCardapio)
                     {
                         var nomeTraduzido = await _traducaoService.GetTraducao(item.Nome, idioma.Sigla);

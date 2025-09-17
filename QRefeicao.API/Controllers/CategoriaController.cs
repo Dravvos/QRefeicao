@@ -38,7 +38,7 @@ namespace QRefeicao.API.Controllers
                 if (string.IsNullOrEmpty(idiomaId) == false)
                 {
                     var idioma = await _tabelaGeralItemService.GetByIdAsync(Guid.Parse(idiomaId));
-                    if(idioma== null)
+                    if (idioma == null)
                         return BadRequest("Idioma inválido");
                     foreach (var item in categorias)
                     {
@@ -56,11 +56,9 @@ namespace QRefeicao.API.Controllers
                         }
                         else
                             item.Nome = nomeTraduzido;
-                        
+
                     }
                 }
-
-
                 return Ok(categorias);
             }
             catch (Exception ex)
