@@ -27,6 +27,7 @@ namespace QRefeicao.Data.NoSQL
             }
             var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
             settings.ConnectTimeout = TimeSpan.FromSeconds(10);
+            /*
             string certPath = @"C:\Users\supero\mongodb-ca.crt";
             string pfxPath = @"C:\Users\supero\mongodb-client.pfx";
 
@@ -55,7 +56,7 @@ namespace QRefeicao.Data.NoSQL
                 ServerCertificateValidationCallback = (sender, cert, chain, errors) => true,
                 CheckCertificateRevocation = false,
             };
-
+            */
             var client = new MongoClient(settings);
 
             _database = client.GetDatabase("QRefeicao");
