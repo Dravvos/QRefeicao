@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using QRefeicao.Data.NoSQL.Models;
 using System.Security.Cryptography.X509Certificates;
 
@@ -7,7 +8,12 @@ namespace QRefeicao.Data.NoSQL
     public class MongoDbContext
     {
         private readonly IMongoDatabase _database;
+        private readonly ILogger<MongoDbContext> _logger;
 
+        public MongoDbContext(ILogger<MongoDbContext> logger)
+        {
+            _logger = logger;
+        }
         public MongoDbContext()
         {
             try
@@ -22,13 +28,13 @@ namespace QRefeicao.Data.NoSQL
                     crtPath = "/etc/mongodb/certs/mongodb-ca.crt";
                     pfxPath = "/etc/mongodb/certs/mongodb-client.pfx";
 
-                    Console.WriteLine("Ambiente de produção detectado");
+                    _logger.LogDebug("Ambiente de produção detectado");
                 }
                 else
                 {
-                    Console.WriteLine("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
+                    _logger.LogDebug("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
                 }
-                var caCert = new X509Certificate2(crtPath);
+                    var caCert = new X509Certificate2(crtPath);
                 var clientCert = new X509Certificate2(pfxPath, Environment.GetEnvironmentVariable("CertificatePassword"),
                      X509KeyStorageFlags.MachineKeySet |
                 X509KeyStorageFlags.PersistKeySet |
@@ -46,7 +52,7 @@ namespace QRefeicao.Data.NoSQL
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Erro ao conectar no mongo: " + ex.Message);
+                _logger.LogError("Erro ao conectar no mongo: " + ex.Message);
             }            
         }
 
