@@ -209,8 +209,8 @@ namespace QRefeicao.API.Controllers
             catch (Exception ex)
             {
                 if (ex.InnerException != null)
-                    return StatusCode(500, ex.InnerException.Message);
-                return StatusCode(500, ex.Message);
+                    return StatusCode(500, ex.InnerException.Message + ":" + ex.StackTrace);
+                return StatusCode(500, ex.Message+":"+ex.StackTrace);
             }
         }
 
