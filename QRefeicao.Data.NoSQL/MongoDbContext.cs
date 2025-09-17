@@ -16,7 +16,7 @@ namespace QRefeicao.Data.NoSQL
 
             var mongoConnectionString = Environment.GetEnvironmentVariable("MongoDBConnection");
             var settings = MongoClientSettings.FromUrl(new MongoUrl(mongoConnectionString));
-
+            settings.ConnectTimeout = TimeSpan.FromSeconds(10);
             string certPath = @"C:\Users\supero\mongodb-ca.crt";
             string pfxPath = @"C:\Users\supero\mongodb-client.pfx";
             if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
