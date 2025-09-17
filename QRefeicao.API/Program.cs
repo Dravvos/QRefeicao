@@ -15,7 +15,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Logging.AddConsole().AddDebug();
 builder.Services.AddDbContext<QRContext>(options =>
 {
     var connection = Environment.GetEnvironmentVariable("QRConnection");

@@ -27,10 +27,12 @@ namespace QRefeicao.Data.NoSQL
                 pfxPath = "/etc/mongodb/certs/mongodb-client.pfx";
 
                 _logger.LogInformation("Ambiente de produção detectado");
+                Console.WriteLine("Ambiente de produção detectado");
             }
             else
             {
                 _logger.LogInformation("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
+                Console.WriteLine("Ambiente de desenvolvimento detectado, utilizando certificados locais.");
             }
             var caCert = new X509Certificate2(crtPath);
             var clientCert = new X509Certificate2(pfxPath, Environment.GetEnvironmentVariable("CertificatePassword"),
