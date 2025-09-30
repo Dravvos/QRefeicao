@@ -168,6 +168,11 @@ namespace QRefeicao.Identity.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAccount(Guid userId)
         {
+            HttpContext.Request.Cookies.TryGetValue("AuthToken", out var cookie);
+
+            if (string.IsNullOrEmpty(cookie))
+                return Unauthorized();
+
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return NotFound();
@@ -189,6 +194,10 @@ namespace QRefeicao.Identity.Controllers
 
             var decodedToken = new JwtSecurityTokenHandler().ReadJwtToken(cookie);
             var claims = decodedToken.Claims;
+            var userId = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            var user = _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return Unauthorized();
 
             return Ok(new
             {
@@ -228,7 +237,7 @@ namespace QRefeicao.Identity.Controllers
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(dto.Token));
             var result = await _userManager.ResetPasswordAsync(user, decodedToken, dto.NewPassword);
             if (result.Succeeded)
-                return Ok();
+                return Ok("Senha alterada com sucesso");
             return StatusCode(500, result.Errors);
         }
 
