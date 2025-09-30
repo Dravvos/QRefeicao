@@ -1,8 +1,4 @@
-﻿using MercadoPago.Client;
-using MercadoPago.Client.Payment;
-using MercadoPago.Config;
-using MercadoPago.Resource.Payment;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using QRefeicao.BLL.Services.Interfaces;
@@ -10,6 +6,8 @@ using QRefeicao.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace QRefeicao.API.Controllers
 {
@@ -29,21 +27,88 @@ namespace QRefeicao.API.Controllers
         }
 
         [HttpGet]
-        [Route("[action]")]
-        public IActionResult GetKey()
+        [Route("[action]/{tipoAssinaturaId}")]
+        public async Task<IActionResult> GetCheckoutId(Guid tipoAssinaturaId)
         {
             try
             {
-                string publicKey = "TEST-03cea708-3e86-4543-bfa4-cb30b6887939";
-                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                var isDevelopment = environment == Environments.Development;
+                var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                string? apiKey = Environment.GetEnvironmentVariable("Asaas_ApiKey");
+                string? uri = ambiente == "Production" ? "https://api.asaas.com/v3/checkouts" : "https://api-sandbox.asaas.com/v3/checkouts";
+                var client = new HttpClient();
 
-                if (isDevelopment == false)
-                    publicKey = "APP_USR-c8512e2c-85b7-4970-a5cf-999a7841049b";
+                decimal valor = 0;
 
-                var encodedKey = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(publicKey));
-                return Ok(encodedKey);
+                var tipoAssinatura = await _tabelaGeralItemService.GetByIdAsync(tipoAssinaturaId);
 
+                if (tipoAssinatura.Sigla == "PRM")
+                {
+                    valor = 199;
+                }
+                else if (tipoAssinatura.Sigla == "PRO")
+                {
+                    valor = 99;
+                }
+                else
+                {
+                    valor = 49;
+                }
+
+                object checkoutObject = new
+                {
+                    billingTypes = new string[] { "CREDIT_CARD", "PIX" },
+                    chargeTypes = new string[] { "DETACHED", "INSTALLMENT" },
+                    minutesToExpire = 30,
+                    callback = new
+                    {
+                        successUrl = ambiente != "Production" ? "http://localhost:5173/QRefeicao.Web/Restaurante" : "https://www.danieloliveira.net.br/QRefeicao.Web/Restaurante",
+                        cancelUrl = ambiente != "Production" ? "http://localhost:5173/QRefeicao.Web/" : "https://www.danieloliveira.net.br/QRefeicao.Web/",
+                        expiredUrl = ambiente != "Production" ? "http://localhost:5173/QRefeicao.Web/" : "https://www.danieloliveira.net.br/QRefeicao.Web/"
+                    },
+                    items = new object[]
+                    {
+                        new
+                        {
+                            description = "Sistema de gerenciamento de cardápios online",
+                            name = "QRefeição",
+                            quantity = 1,
+                            value = valor
+                        }
+                    },
+                    installments = new
+                    {
+                        maxInstallmentCount = 3
+                    }
+                };
+
+                string stringContent = JsonSerializer.Serialize(checkoutObject);
+
+                var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Post,
+                    RequestUri = new Uri(uri),
+                    Headers =
+    {
+                    { "accept", "application/json" },
+                    { "access_token", apiKey },
+                    {"User-Agent",".NetApplication/1.0.0" },
+                    {"Access-Control-Allow-Origin","*" }
+    },
+                    Content = new StringContent(stringContent)
+                    {
+                        Headers =
+                        {
+                            ContentType = new MediaTypeHeaderValue("application/json")
+                        }
+                    }
+                };
+                using (var response = await client.SendAsync(request))
+                {
+                    //response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(body);
+                    return Ok(body);
+                }
             }
             catch (Exception ex)
             {
@@ -155,6 +220,7 @@ namespace QRefeicao.API.Controllers
             }
         }
 
+        /*
         [HttpPost("Process/{tipoAssinaturaId}")]
         public async Task<IActionResult> ProcessarPagamento([FromBody] MercadoPagoDTO cardForm, Guid tipoAssinaturaId)
         {
@@ -257,5 +323,6 @@ namespace QRefeicao.API.Controllers
 
             }
         }
+        */
     }
 }
