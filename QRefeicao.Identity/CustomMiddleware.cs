@@ -21,7 +21,7 @@
             else
             {
                 // Rewrite URL for production
-                context.Request.PathBase = "/QRefeicao.API";
+                context.Request.PathBase = "/QRefeicao.Identity";
             }
 
             await _next(context);
