@@ -36,7 +36,7 @@ jobs:
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USERNAME }}
-        password: ${{ secrets.VM_PASSWORD }}
+        key: ${{ secrets.VM_SSH_KEY }}
         source: './QRefeicao/QRefeicao.API/publish'
         target: '/var/www/html'
         port: 22
@@ -46,7 +46,7 @@ jobs:
       with:
         host: ${{ secrets.VM_HOST }}
         username: ${{ secrets.VM_USERNAME }}
-        password: ${{ secrets.VM_PASSWORD }}
+        key: ${{ secrets.VM_SSH_KEY }}
         source: './QRefeicao/QRefeicao.Identity/publish'
         target: '/var/www/html'
         port: 22
@@ -56,9 +56,7 @@ jobs:
       with:
         host: ${{secrets.VM_HOST}}
         username: ${{secrets.VM_USERNAME}}
-        password: ${{secrets.VM_PASSWORD}}
+        key: ${{ secrets.VM_SSH_KEY }}
         script: |
-          echo "${{ secrets.VM_PASSWORD }}" | sudo -S systemctl restart QRefeicao.API.service
-          echo "${{ secrets.VM_PASSWORD }}" | sudo -S systemctl restart QRefeicao.Identity.service
-      env:
-        VM_PASSWORD: ${{ secrets.VM_PASSWORD }}
+          sudo -S systemctl restart QRefeicao.API.service
+          sudo -S systemctl restart QRefeicao.Identity.service
