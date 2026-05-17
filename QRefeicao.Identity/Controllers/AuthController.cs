@@ -67,20 +67,21 @@ namespace QRefeicao.Identity.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
-
-            var user = await _userManager.FindByNameAsync(dto.Email);
-            if (user == null)
+            try
             {
-                user = await _userManager.FindByEmailAsync(dto.Email);
+                var user = await _userManager.FindByNameAsync(dto.Email);
                 if (user == null)
-                    return BadRequest("Email/Senha inválido(s)");
-            }
+                {
+                    user = await _userManager.FindByEmailAsync(dto.Email);
+                    if (user == null)
+                        return BadRequest("Email/Senha inválido(s)");
+                }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, dto.Password, false, false);
-            if (result.Succeeded)
-            {
-                var token = await _service.GenerateTokenAsync(user, _userManager);
-                var claims = new List<Claim>
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, dto.Password, false, false);
+                if (result.Succeeded)
+                {
+                    var token = await _service.GenerateTokenAsync(user, _userManager);
+                    var claims = new List<Claim>
                 {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Name, user.UserName),
@@ -89,46 +90,51 @@ namespace QRefeicao.Identity.Controllers
                 new Claim(JwtRegisteredClaimNames.GivenName,user.Nome),
                 new Claim(JwtRegisteredClaimNames.FamilyName, user.Sobrenome),
                 };
-                var roles = await _userManager.GetRolesAsync(user);
-                foreach (var role in roles)
-                {
-                    claims.Add(new Claim("role", role));
-                    if (_roleManager.SupportsRoleClaims)
+                    var roles = await _userManager.GetRolesAsync(user);
+                    foreach (var role in roles)
                     {
-                        var identityRole = await _roleManager.FindByNameAsync(role);
-                        if (identityRole != null)
-                            claims.AddRange(await _roleManager.GetClaimsAsync(identityRole));
+                        claims.Add(new Claim("role", role));
+                        if (_roleManager.SupportsRoleClaims)
+                        {
+                            var identityRole = await _roleManager.FindByNameAsync(role);
+                            if (identityRole != null)
+                                claims.AddRange(await _roleManager.GetClaimsAsync(identityRole));
+                        }
                     }
-                }
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
+                    await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
 
-                var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-                var isDevelopment = environment == Environments.Development;
-                var cookieOptions = new CookieOptions();
-                if (isDevelopment == false)
-                {
-                    cookieOptions.HttpOnly = true;
-                    cookieOptions.Secure = true;
-                    cookieOptions.SameSite = SameSiteMode.Strict;
-                    cookieOptions.Expires = DateTime.Now.AddHours(3);
-                    cookieOptions.IsEssential = true; // Make the session cookie essential
+                    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                    var isDevelopment = environment == Environments.Development;
+                    var cookieOptions = new CookieOptions();
+                    if (isDevelopment == false)
+                    {
+                        cookieOptions.HttpOnly = true;
+                        cookieOptions.Secure = true;
+                        cookieOptions.SameSite = SameSiteMode.Strict;
+                        cookieOptions.Expires = DateTime.Now.AddHours(3);
+                        cookieOptions.IsEssential = true; // Make the session cookie essential
+                    }
+                    else
+                    {
+                        cookieOptions.HttpOnly = true;
+                        cookieOptions.Secure = true;
+                        cookieOptions.SameSite = SameSiteMode.None;
+                        cookieOptions.Expires = DateTime.Now.AddHours(3);
+                        cookieOptions.IsEssential = true; // Make the session cookie essential
+                    }
+
+                    Response.Cookies.Append("AuthToken", token, cookieOptions);
+                    return Ok("Logged in succesfully");
                 }
                 else
-                {
-                    cookieOptions.HttpOnly = true;
-                    cookieOptions.Secure = true;
-                    cookieOptions.SameSite = SameSiteMode.None;
-                    cookieOptions.Expires = DateTime.Now.AddHours(3);
-                    cookieOptions.IsEssential = true; // Make the session cookie essential
-                }
-
-                Response.Cookies.Append("AuthToken", token, cookieOptions);
-                return Ok("Logged in succesfully");
+                    return BadRequest("Invalid credentials");
             }
-            else
-                return BadRequest("Invalid credentials");
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }            
         }
 
         [HttpPut]
