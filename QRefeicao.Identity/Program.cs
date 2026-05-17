@@ -105,7 +105,7 @@ if (builder.Environment.IsProduction())
             options.Cookie.Name = "AuthToken";
             options.Cookie.HttpOnly = true;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
-            options.Cookie.SameSite = SameSiteMode.Lax; // or lax
+            options.Cookie.SameSite = SameSiteMode.None; // or lax
             options.ExpireTimeSpan = TimeSpan.FromHours(3);
         });
 
