@@ -200,7 +200,12 @@ namespace QRefeicao.Identity.Controllers
 
             var decodedToken = new JwtSecurityTokenHandler().ReadJwtToken(cookie);
             var claims = decodedToken.Claims;
-            var userId = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            
+            string userId = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+            
+            if (string.IsNullOrEmpty(userId))
+                userId = User.Claims.FirstOrDefault().Value;
+
             var user = _userManager.FindByIdAsync(userId);
             if (user == null)
                 return Unauthorized();
