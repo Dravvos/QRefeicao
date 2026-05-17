@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using QRefeicao.API;
 using QRefeicao.Identity;
 using QRefeicao.Identity.Initializer;
 using QRefeicao.Identity.Models;
@@ -53,6 +53,13 @@ if (string.IsNullOrEmpty(audience.Value))
     throw new InvalidOperationException("JWT AUDIENCE IS NOT SET");
 }
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost;
+});
 
 builder.Services.AddAuthentication(options =>
 {
@@ -104,8 +111,8 @@ if (builder.Environment.IsProduction())
         .AddCookie(options => {
             options.Cookie.Name = "AuthToken";
             options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-            options.Cookie.SameSite = SameSiteMode.None; // or lax
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.Cookie.SameSite = SameSiteMode.Lax; // or lax
             options.ExpireTimeSpan = TimeSpan.FromHours(3);
         });
 
@@ -177,6 +184,8 @@ builder.Services.AddAntiforgery(options =>
 });
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 app.UseMiddleware<CustomMiddleware>();
 

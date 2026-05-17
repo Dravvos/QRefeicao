@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -25,6 +26,14 @@ builder.Services.AddDbContext<QRContext>(options =>
 builder.Services.AddDbContext<AuthContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("QRConnection"));
+});
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto |
+        ForwardedHeaders.XForwardedHost;
 });
 
 builder.Services.AddSingleton<MongoDbContext>();
@@ -115,6 +124,8 @@ builder.Services.AddScoped<ITabelaGeralItemService, TabelaGeralItemService>();
 builder.Services.AddScoped<ITraducaoService, TraducaoService>();
 
 var app = builder.Build();
+
+app.UseForwardedHeaders();
 
 app.UseMiddleware<CustomMiddleware>();
 

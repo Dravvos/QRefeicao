@@ -1,4 +1,4 @@
-﻿namespace QRefeicao.API
+﻿namespace QRefeicao.Identity
 {
     public class CustomMiddleware
     {
