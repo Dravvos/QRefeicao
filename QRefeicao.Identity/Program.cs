@@ -104,7 +104,7 @@ if (builder.Environment.IsProduction())
         .AddCookie(options => {
             options.Cookie.Name = "AuthToken";
             options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // HTTPS only
+            options.Cookie.SecurePolicy = CookieSecurePolicy.None;
             options.Cookie.SameSite = SameSiteMode.None; // or lax
             options.ExpireTimeSpan = TimeSpan.FromHours(3);
         });
@@ -117,7 +117,7 @@ else
     .AddCookie(options => {
         options.Cookie.Name = "AuthToken";
         options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.None;
         options.Cookie.SameSite = SameSiteMode.None; // or Strict
         options.ExpireTimeSpan = TimeSpan.FromHours(3);
     });

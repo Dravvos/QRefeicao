@@ -61,9 +61,9 @@ namespace QRefeicao.API.Controllers
                     minutesToExpire = 30,
                     callback = new
                     {
-                        successUrl = ambiente != "Production" ? "http://localhost:5173/QRefeicao.Web/Restaurante" : "https://www.danieloliveira.net.br/QRefeicao.Web/Restaurante",
-                        cancelUrl = ambiente != "Production" ? "http://localhost:5173/QRefeicao.Web/" : "https://www.danieloliveira.net.br/QRefeicao.Web/",
-                        expiredUrl = ambiente != "Production" ? "http://localhost:5173/QRefeicao.Web/" : "https://www.danieloliveira.net.br/QRefeicao.Web/"
+                        successUrl = ambiente != "Production" ? "http://127.0.0.1:5173/QRefeicao/Restaurante/" + tipoAssinaturaId : "https://www.danieloliveira.net.br/QRefeicao/Restaurante/" + tipoAssinaturaId,
+                        cancelUrl = ambiente != "Production" ? "http://127.0.0.1:5173/QRefeicao/" : "https://www.danieloliveira.net.br/QRefeicao/",
+                        expiredUrl = ambiente != "Production" ? "http://127.0.0.1:5173/QRefeicao/Precos" : "https://www.danieloliveira.net.br/QRefeicao/Precos"
                     },
                     items = new object[]
                     {
@@ -155,9 +155,18 @@ namespace QRefeicao.API.Controllers
             try
             {
                 assinatura.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
-
+                var tgStatusAssinatura = await _tabelaGeralService.GetByNomeAsync("StatusAssinatura");
+                var tgiStatusAssinatura = await _tabelaGeralItemService.GetBySiglaAsync(tgStatusAssinatura.Id.Value, "ATV");
+                if (assinatura.UsuarioId == Guid.Empty)
+                {
+                    string userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                    if (string.IsNullOrEmpty(userId))
+                        userId = User.Claims.FirstOrDefault().Value;
+                    assinatura.UsuarioId = Guid.Parse(userId);
+                }
                 if (assinatura == null)
                     return UnprocessableEntity("Assinatura não pode ser nula");
+                assinatura.IdTGStatusAssinatura = tgiStatusAssinatura.Id.Value;
                 await _service.CreateAssinatura(assinatura);
                 return StatusCode(201);
             }

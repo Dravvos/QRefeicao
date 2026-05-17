@@ -152,7 +152,7 @@ namespace QRefeicao.Identity.Controllers
                 {
                     cookieOptions.HttpOnly = true;
                     cookieOptions.Secure = true;
-                    cookieOptions.SameSite = SameSiteMode.Strict;
+                    cookieOptions.SameSite = SameSiteMode.None;
                     cookieOptions.Expires = DateTime.Now.AddDays(-1);
                     cookieOptions.IsEssential = true; // Make the session cookie essential
                 }
