@@ -103,6 +103,16 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyHeader()
+               .AllowAnyMethod()
+               .WithOrigins("https://www.danieloliveira.net.br", "https://danieloliveira.net.br", "http://136.248.111.167", "http://136.248.111.167/QRefeicao");
+    });
+});
+
 
 builder.Services.AddScoped<IAssinaturaRepository, AssinaturaRepository>();
 builder.Services.AddScoped<ICardapioRepository, CardapioRepository>();
