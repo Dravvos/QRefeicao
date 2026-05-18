@@ -109,7 +109,7 @@ builder.Services.AddCors(options =>
     {
         builder.AllowAnyHeader()
                .AllowAnyMethod()
-               .WithOrigins("https://www.danieloliveira.net.br", "https://danieloliveira.net.br", "http://136.248.111.167", "http://136.248.111.167/QRefeicao");
+               .WithOrigins("https://danieloliveira.net.br/QRefeicao", "https://www.danieloliveira.net.br/QRefeicao");
     });
 });
 
