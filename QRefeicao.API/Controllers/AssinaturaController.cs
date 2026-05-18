@@ -132,7 +132,12 @@ namespace QRefeicao.API.Controllers
                 var decodedToken = new JwtSecurityTokenHandler().ReadJwtToken(cookie);
                 var claims = decodedToken.Claims;
 
-                var usuarioId = Guid.Parse(claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value);
+                string userId = claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                    userId = User.Claims.FirstOrDefault().Value;
+
+                var usuarioId = Guid.Parse(userId);
                 if (usuarioId == Guid.Empty)
                     return UnprocessableEntity("Id do usuário não pode ser vazio");
                 var assinatura = await _service.GetAssinaturaByUserId(usuarioId);
