@@ -100,7 +100,7 @@ if (builder.Environment.IsProduction())
     {
         options.AddPolicy("AllowAll", builder =>
         {
-            builder.WithOrigins("https://danieloliveira.net.br/QRefeicao", "https://www.danieloliveira.net.br/QRefeicao")
+            builder.WithOrigins("https://danieloliveira.net.br", "https://www.danieloliveira.net.br")
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials();
