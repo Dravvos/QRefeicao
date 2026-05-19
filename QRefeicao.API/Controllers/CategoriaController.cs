@@ -81,7 +81,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCategoria(dto);
-                return StatusCode(201);
+                return StatusCode(201, dto);
             }
             catch (ArgumentException ex)
             {
@@ -115,7 +115,7 @@ namespace QRefeicao.API.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NoContent();
             }
             catch (ArgumentException ex)
             {
@@ -141,7 +141,7 @@ namespace QRefeicao.API.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {

@@ -184,7 +184,7 @@ namespace QRefeicao.API.Controllers
                 var restauranteIdiomas = await _restauranteIdiomaService.GetIdiomasRestaurante(dtos.First().RestauranteId);
                 foreach (var item in restauranteIdiomas)
                 {
-                    await _restauranteIdiomaService.Delete(item.Id.Value);
+                    _restauranteIdiomaService.Delete(item.Id.Value);
                 }
 
                 await _restauranteIdiomaService.Create(dtos);

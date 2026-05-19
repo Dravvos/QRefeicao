@@ -142,7 +142,7 @@ namespace QRefeicao.API.Controllers
                     return UnprocessableEntity("Id do usuário não pode ser vazio");
                 var assinatura = await _service.GetAssinaturaByUserId(usuarioId);
                 if (assinatura == null)
-                    return NotFound();
+                    return Ok();
 
                 return Ok(assinatura);
             }
@@ -173,7 +173,7 @@ namespace QRefeicao.API.Controllers
                     return UnprocessableEntity("Assinatura não pode ser nula");
                 assinatura.IdTGStatusAssinatura = tgiStatusAssinatura.Id.Value;
                 await _service.CreateAssinatura(assinatura);
-                return StatusCode(201);
+                return StatusCode(201, assinatura);
             }
             catch (ArgumentException ex)
             {
@@ -224,7 +224,7 @@ namespace QRefeicao.API.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {

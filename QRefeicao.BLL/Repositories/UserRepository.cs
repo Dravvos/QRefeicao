@@ -15,9 +15,9 @@ namespace QRefeicao.BLL.Repositories
 
         public async Task<Guid> GetUserId(string email)
         {
-            var user = await con.Users.FirstOrDefaultAsync(x => x.Email == email);
+            var user = await con.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
             if (user == null)
-                user = await con.Users.FirstOrDefaultAsync(x => x.UserName == email);
+                user = await con.Users.AsNoTracking().FirstOrDefaultAsync(x => x.UserName == email);
 
             Guid.TryParse(user.Id, out Guid userId);
             return userId;

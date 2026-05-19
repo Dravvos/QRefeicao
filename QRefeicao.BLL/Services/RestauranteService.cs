@@ -35,7 +35,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task DeleteRestaurante(Guid id)
         {
-            if (await _repository.GetById(id) == null)
+            if (await _repository.RestauranteExists(id) == false)
                 throw new KeyNotFoundException();
 
             await _repository.DeleteRestaurante(id);
@@ -52,7 +52,7 @@ namespace QRefeicao.BLL.Services
             if (dto.Id.HasValue == false || dto.Id.Value == Guid.Empty)
                 throw new ArgumentNullException("Id inválido");
 
-            if (await _repository.GetById(dto.Id.Value) == null)
+            if (await _repository.RestauranteExists(dto.Id.Value) == false)
                 throw new KeyNotFoundException();
 
             dto.DataAlteracao = DateTime.UtcNow;

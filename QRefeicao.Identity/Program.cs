@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -211,6 +212,21 @@ using var scope = app.Services.CreateScope();
 var initializer = scope.ServiceProvider.GetRequiredService<IDBInitializer>();
 initializer.Initialize();
 
+/*
+app.Use((context, next) =>
+{
+    var antiforgery = context.RequestServices.GetRequiredService<IAntiforgery>();
+    var tokens = antiforgery.GetAndStoreTokens(context);
+
+    // Set HttpOnly = false so JavaScript can read the cookie to send it back in a header
+    context.Response.Cookies.Append("XSRF-TOKEN", tokens.RequestToken!,
+        new CookieOptions { HttpOnly = false, Path = "/" });
+
+    return next(context);
+});
+
+app.UseAntiforgery();
+*/
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

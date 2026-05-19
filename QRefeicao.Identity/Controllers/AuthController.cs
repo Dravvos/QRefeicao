@@ -112,7 +112,7 @@ namespace QRefeicao.Identity.Controllers
                     {
                         cookieOptions.HttpOnly = true;
                         cookieOptions.Secure = true;
-                        cookieOptions.SameSite = SameSiteMode.None;
+                        cookieOptions.SameSite = SameSiteMode.Lax;
                         cookieOptions.Expires = DateTime.Now.AddHours(3);
                         cookieOptions.IsEssential = true; // Make the session cookie essential
                     }
@@ -152,7 +152,7 @@ namespace QRefeicao.Identity.Controllers
                 {
                     cookieOptions.HttpOnly = true;
                     cookieOptions.Secure = true;
-                    cookieOptions.SameSite = SameSiteMode.None;
+                    cookieOptions.SameSite = SameSiteMode.Lax;
                     cookieOptions.Expires = DateTime.Now.AddDays(-1);
                     cookieOptions.IsEssential = true; // Make the session cookie essential
                 }

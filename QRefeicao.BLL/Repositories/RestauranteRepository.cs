@@ -29,16 +29,54 @@ namespace QRefeicao.BLL.Repositories
             return con.SaveChangesAsync();
         }
 
-        public async Task<RestauranteDTO> GetById(Guid id)
+        public async Task<RestauranteDTO?> GetById(Guid id)
         {
-            var model = await con.Restaurante.FirstOrDefaultAsync(x => x.Id == id);
-            return Map<RestauranteDTO>.Convert(model);
+            var restauranteIdiomas = con.RestauranteIdioma.AsNoTracking().Where(ri => ri.RestauranteId == id).Select(ri => new TabelaGeralItemDTO
+            {
+                Id = ri.Id,
+                Descricao = ri.Idioma.Descricao,
+                Sigla = ri.Idioma.Sigla
+            }).ToList();
+            var model = await con.Restaurante.AsNoTracking().Where(x => x.Id == id).Select(x => new RestauranteDTO
+            {
+                Id = x.Id,
+                Nome = x.Nome,
+                CorPrincipal = x.CorPrincipal,
+                CorSecundaria = x.CorSecundaria,
+                LogoBytes = x.LogoBytes,
+                Idiomas = restauranteIdiomas,
+                LogoBase64 = x.LogoBytes != null ? Convert.ToBase64String(x.LogoBytes) : null
+            }).FirstOrDefaultAsync();
+            return model;
         }
 
-        public async Task<RestauranteDTO> GetRestauranteByUserId(Guid userId)
+        public async Task<RestauranteDTO?> GetRestauranteByUserId(Guid userId)
         {
-            var model = await con.Restaurante.FirstOrDefaultAsync(x => x.UsuarioId == userId);
-            return Map<RestauranteDTO>.Convert(model);
+            var model = await con.Restaurante.AsNoTracking().Where(x => x.UsuarioId == userId).Select(x => new RestauranteDTO
+            {
+                Id = x.Id,
+                Nome = x.Nome,
+                CorPrincipal = x.CorPrincipal,
+                CorSecundaria = x.CorSecundaria,
+                LogoBytes = x.LogoBytes,
+                Idiomas = new List<TabelaGeralItemDTO>(5),
+                LogoBase64 = x.LogoBytes != null ? Convert.ToBase64String(x.LogoBytes) : null
+            }).FirstOrDefaultAsync();
+            if (model == null)
+                return model;
+            var restauranteIdiomas = con.RestauranteIdioma.AsNoTracking().Where(ri => ri.RestauranteId == model.Id).Select(ri => new TabelaGeralItemDTO
+            {
+                Id = ri.Id,
+                Descricao = ri.Idioma.Descricao,
+                Sigla = ri.Idioma.Sigla
+            }).ToList();
+            model.Idiomas = restauranteIdiomas;
+            return model;
+        }
+
+        public async Task<bool> RestauranteExists(Guid id)
+        {
+            return await con.Restaurante.AsNoTracking().AnyAsync(x => x.Id == id);
         }
 
         public async Task UpdateRestaurante(RestauranteDTO dto)

@@ -49,7 +49,7 @@ namespace QRefeicao.BLL.Services
             await _repository.DeleteAssinatura(id);
         }
 
-        public async Task<AssinaturaDTO> GetAssinaturaByUserId(Guid usuarioId)
+        public async Task<AssinaturaDTO?> GetAssinaturaByUserId(Guid usuarioId)
         {
             if (usuarioId == Guid.Empty)
                 throw new ArgumentNullException("Usuário inválido.");

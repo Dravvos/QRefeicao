@@ -29,7 +29,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            if ((await _tabelaGeralItemRepository.GetByIdAsync(id)) == null)
+            if (!await _tabelaGeralItemRepository.ItemExist(id))
                 throw new KeyNotFoundException();
 
             await _tabelaGeralItemRepository.DeleteAsync(id);
@@ -43,12 +43,12 @@ namespace QRefeicao.BLL.Services
                 return await _tabelaGeralItemRepository.GetAllItemsAsync(tabelaGeralId.Value);
         }
 
-        public async Task<TabelaGeralItemDTO> GetByIdAsync(Guid id)
+        public async Task<TabelaGeralItemDTO?> GetByIdAsync(Guid id)
         {
             return await _tabelaGeralItemRepository.GetByIdAsync(id);
         }
 
-        public async Task<TabelaGeralItemDTO> GetBySiglaAsync(Guid tabelaGeralId, string sigla)
+        public async Task<TabelaGeralItemDTO?> GetBySiglaAsync(Guid tabelaGeralId, string sigla)
         {
             return await _tabelaGeralItemRepository.GetBySiglaAsync(tabelaGeralId, sigla);
         }

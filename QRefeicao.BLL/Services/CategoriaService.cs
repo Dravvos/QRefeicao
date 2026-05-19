@@ -6,18 +6,10 @@ namespace QRefeicao.BLL.Services
 {
     public class CategoriaService : ICategoriaService
     {
-        private readonly ICategoriaRepository _repository;
-        private readonly IAssinaturaRepository _assinaturaRepository;
-        private readonly ITabelaGeralItemRepository _tabelaGeralItemRepository;
-        private readonly IUserRepository _userRepository;
-
-        public CategoriaService(ICategoriaRepository repository, IAssinaturaRepository assinaturaRepository,
-            ITabelaGeralItemRepository tabelaGeralItemRepository, IUserRepository userRepository)
+        private readonly ICategoriaRepository _repository;        
+        public CategoriaService(ICategoriaRepository repository)
         {
             _repository = repository;
-            _assinaturaRepository = assinaturaRepository;
-            _tabelaGeralItemRepository = tabelaGeralItemRepository;
-            _userRepository = userRepository;
         }
 
         private void ValidarDTO(CategoriaDTO dto)
@@ -41,7 +33,7 @@ namespace QRefeicao.BLL.Services
 
         public async Task DeleteCategoria(Guid id)
         {
-            if (await _repository.GetById(id) == null)
+            if (await _repository.CategoriaExists(id) == false)
                 throw new KeyNotFoundException();
 
             await _repository.DeleteCategoria(id);

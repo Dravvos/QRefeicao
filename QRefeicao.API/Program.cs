@@ -103,6 +103,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.WebHost.ConfigureKestrel(o => o.AllowSynchronousIO = false);
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", builder =>

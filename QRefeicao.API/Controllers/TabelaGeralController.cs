@@ -32,7 +32,7 @@ namespace QRefeicao.API.Controllers
             try
             {
                 var tabelaGeral = await _tabelaGeralService.GetByIdAsync(id);
-                if (tabelaGeral == null) return NotFound();
+                if (tabelaGeral == null) return Ok();
                 return Ok(tabelaGeral);
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace QRefeicao.API.Controllers
             try
             {
                 var tabelaGeral = await _tabelaGeralService.GetByNomeAsync(nome);
-                if (tabelaGeral == null) return NotFound();
+                if (tabelaGeral == null) return Ok();
                 return Ok(tabelaGeral);
             }
             catch (Exception ex)
@@ -72,7 +72,7 @@ namespace QRefeicao.API.Controllers
             {
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 var ret = await _tabelaGeralService.AddAsync(dto);
-                return Ok(ret);
+                return StatusCode(201, ret);
 
             }
             catch (ArgumentException ex) { return BadRequest(ex); }
@@ -124,10 +124,6 @@ namespace QRefeicao.API.Controllers
                 await _tabelaGeralService.DeleteAsync(tabelaGeralId);
                 return Ok();
             }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
             catch (Exception ex)
             {
                 if (ex.InnerException == null)
@@ -142,7 +138,7 @@ namespace QRefeicao.API.Controllers
         public async Task<IActionResult> GetTabelaGeralItemById(Guid id)
         {
             var tabelaGeral = await _tabelaGeralItemService.GetByIdAsync(id);
-            if (tabelaGeral == null) return NotFound();
+            if (tabelaGeral == null) return Ok();
             return Ok(tabelaGeral);
         }
 
@@ -161,9 +157,9 @@ namespace QRefeicao.API.Controllers
                 var tabelasGerais = await _tabelaGeralItemService.GetAllItemsAsync(tabelaGeralId);
 
                 if (tabelasGerais == null || tabelasGerais.Any() == false)
-                    return NotFound();
+                    return Ok();
 
-            
+
                 return Ok(tabelasGerais);
             }
             catch (Exception ex)
@@ -238,10 +234,6 @@ namespace QRefeicao.API.Controllers
             {
                 await _tabelaGeralItemService.DeleteAsync(tabelaGeralItemId);
                 return Ok();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
             }
             catch (Exception ex)
             {

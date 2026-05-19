@@ -33,7 +33,6 @@ namespace QRefeicao.BLL.Services
 
             var assinatura = await _assinaturaRepository.GetAssinaturaByUserId(userId);
 
-            var idiomasRestaurante = await _repository.GetIdiomasRestaurante(dtos[0].RestauranteId);
             if (assinatura.TipoAssinatura.Sigla == "BASE" && dtos.Count >1)
             {
                 throw new Exception("A assinatura BÁSICA não permite seu restaurante ter mais de 1 idioma");
@@ -60,8 +59,8 @@ namespace QRefeicao.BLL.Services
 
         public async Task Delete(Guid id)
         {
-            var dto = await _repository.GetById(id);
-            if (dto == null)
+            bool exists = await _repository.ItemExists(id);
+            if (!exists)
                 throw new KeyNotFoundException();
 
             await _repository.Delete(id);

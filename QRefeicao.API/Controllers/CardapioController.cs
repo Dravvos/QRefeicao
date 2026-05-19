@@ -31,7 +31,7 @@ namespace QRefeicao.API.Controllers
             {
                 var cardapio = await _service.GetCardapioByRestaurante(restauranteId);
                 if (cardapio == null)
-                    return NotFound();
+                    return Ok();
 
                 return Ok(cardapio);
             }
@@ -89,7 +89,7 @@ namespace QRefeicao.API.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -113,7 +113,7 @@ namespace QRefeicao.API.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -226,7 +226,7 @@ namespace QRefeicao.API.Controllers
 
                 dto.UsuarioInclusao = User.FindFirstValue(JwtRegisteredClaimNames.Name);
                 await _service.CreateCardapioItem(dto);
-                return StatusCode(201);
+                return StatusCode(201, dto);
             }
             catch (ArgumentException ex)
             {
@@ -263,7 +263,7 @@ namespace QRefeicao.API.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -287,7 +287,7 @@ namespace QRefeicao.API.Controllers
             }
             catch (KeyNotFoundException)
             {
-                return NotFound();
+                return NoContent();
             }
             catch (Exception ex)
             {
