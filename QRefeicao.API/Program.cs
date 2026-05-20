@@ -17,13 +17,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Logging.AddConsole().AddDebug();
-builder.Services.AddDbContext<QRContext>(options =>
+builder.Services.AddDbContextPool<QRContext>(options =>
 {
     var connection = Environment.GetEnvironmentVariable("QRConnection");
     options.UseNpgsql(connection);
 });
 
-builder.Services.AddDbContext<AuthContext>(options =>
+builder.Services.AddDbContextPool<AuthContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("QRConnection"));
 });

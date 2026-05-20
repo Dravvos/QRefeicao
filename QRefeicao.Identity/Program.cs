@@ -26,7 +26,7 @@ var localizationOptions = new RequestLocalizationOptions()
     .AddSupportedUICultures(supportedCultures);
 
 
-builder.Services.AddDbContext<AuthContext>(options =>
+builder.Services.AddDbContextPool<AuthContext>(options =>
 {
     options.UseNpgsql(Environment.GetEnvironmentVariable("QRConnection"));
 });
