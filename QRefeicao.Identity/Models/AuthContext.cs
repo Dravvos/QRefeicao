@@ -12,10 +12,5 @@ namespace QRefeicao.Identity.Models
         public AuthContext()
         {
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var config = Environment.GetEnvironmentVariable("QRConnection");
-            optionsBuilder.UseNpgsql(config);
-        }
     }
 }

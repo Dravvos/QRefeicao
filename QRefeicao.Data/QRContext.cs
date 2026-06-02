@@ -12,12 +12,7 @@ namespace QRefeicao.Data
         public QRContext(DbContextOptions<QRContext> options) : base(options)
         {
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            var con = Environment.GetEnvironmentVariable("QRConnection");
-            optionsBuilder.UseNpgsql(con);
-        }
-
+        
         public DbSet<TabelaGeralModel> TabelaGeral { get; set; }
         public DbSet<TabelaGeralItemModel> TabelaGeralItem { get; set; }
         public DbSet<AssinaturaModel> Assinatura { get; set; }
