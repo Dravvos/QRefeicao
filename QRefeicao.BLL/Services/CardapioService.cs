@@ -35,9 +35,6 @@ namespace QRefeicao.BLL.Services
 
         private void ValidarDTO(CardapioItemDTO dto)
         {
-            if (dto.CardapioId == Guid.Empty)
-                throw new ArgumentNullException("Selecione o cardápio");
-
             if (dto.CategoriaId == Guid.Empty)
                 throw new ArgumentNullException("Selecione a categoria do item");
 
@@ -49,7 +46,6 @@ namespace QRefeicao.BLL.Services
 
             if (dto.Ordem < 0)
                 throw new ArgumentOutOfRangeException("O menor índice é zero");
-
 
         }
 
