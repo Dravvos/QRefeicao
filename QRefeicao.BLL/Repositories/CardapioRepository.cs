@@ -78,8 +78,8 @@ namespace QRefeicao.BLL.Repositories
                     {
                         Restaurante = new RestauranteDTO
                         {
-                            Nome = x.Nome,
-                            Id = x.Id
+                            Nome = x.Cardapio.Restaurante.Nome,
+                            Id = x.Cardapio.Restaurante.Id
                         },
                         Nome = x.Cardapio.Nome,
                         Id = x.Cardapio.Id
