@@ -41,7 +41,7 @@ namespace QRefeicao.BLL.Services
             await _repository.DeleteRestaurante(id);
         }
 
-        public async Task<RestauranteDTO> GetRestauranteByUserId(Guid userId)
+        public async Task<RestauranteDTO?> GetRestauranteByUserId(Guid userId)
         {
             return await _repository.GetRestauranteByUserId(userId);
         }

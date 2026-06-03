@@ -25,9 +25,9 @@ namespace QRefeicao.API.Controllers
             _tabelaGeralItemService = tabelaGeralItemService;
         }
 
-        [HttpGet("{restauranteId:guid}/{idiomaId}")]
+        [HttpGet("{restauranteId:guid}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetCategoriasByRestaurante(Guid restauranteId, string idiomaId = "")
+        public async Task<IActionResult> GetCategoriasByRestaurante([FromRoute]Guid restauranteId, [FromQuery]string idiomaId = "")
         {
             try
             {
